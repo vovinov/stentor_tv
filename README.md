@@ -1,0 +1,1 @@
+Stentor TV News System by Vyacheslav Ovinov
