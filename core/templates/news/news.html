@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+
+{% block h1_title %}
+<h1 class="text-center">Welcome</h1>
+{% endblock %}
+
+{% block news_list %}
+    <div class="container">
+        <ul class="list-group">
+            {% for n in news %}
+            <li class="list-group-item">
+                <a href="#">{{n.title}}</a>
+            </li>
+            {% endfor %}
+        </ul>
+    </div>
+{% endblock %}
