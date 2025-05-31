@@ -17,6 +17,9 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 
+from news.views import news_view
+
 urlpatterns = [
+    path('', news_view),
     path('admin/', admin.site.urls),
 ]
