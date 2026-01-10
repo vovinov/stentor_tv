@@ -19,9 +19,10 @@ from django.urls import path
 
 from debug_toolbar.toolbar import debug_toolbar_urls
 
-from apps.news import views
+from apps.rundowns.views import rundown_get_last, rundown_create
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', views.get_index, name="index")
+    path('', rundown_get_last, name="rundown_get_last"),
+    path("rundowns/create/", rundown_create, name="rundown_create"),
 ] + debug_toolbar_urls()

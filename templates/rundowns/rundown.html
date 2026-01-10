@@ -2,6 +2,11 @@
 
 {% block rundown %}
 
+    <div class="d-flex flex-row-reverse p-2 align-items-center">
+        <div>{{selected_date}}</div>
+        <div class="block p-2">Duration: </div>
+    </div>
+
     <div class="accordion" id="accordionRundown">
 
         {% for news in news %}
