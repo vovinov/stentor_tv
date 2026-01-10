@@ -1,0 +1,38 @@
+<div class="accordion-item" style="color: #198754">
+    <h2 class="accordion-header">
+      <div class="d-flex">
+        <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#accord{{forloop.counter}}" aria-expanded="true" aria-controls="accord{{forloop.counter}}">
+          {{news.title}}
+        </button>
+      </div>
+    </h2>
+    <div id="accord{{forloop.counter}}" class="accordion-collapse collapse" data-bs-parent="#accordionRundown">
+      <div class="accordion-body">
+        <div class="d-flex">
+          <div>{{news.content}}</div>
+          <button type="btn">123</button>
+          <div class="dropdown">
+            <button class="btn 
+                    {% if news.status == 'mont' %} btn-info {% endif %}
+                    {% if news.status == 'edit' %} btn-warning {% endif %}
+                    {% if news.status == 'final' %} btn-success {% endif %}
+                    dropdown-toggle"
+                    type="button"
+                    id="rundownsDropdown"
+                    data-bs-toggle="dropdown"
+                    aria-expanded="false">
+                    {% if news.status == 'mont' %} Монтаж {% endif %}
+                    {% if news.status == 'edit' %} Правка {% endif %}
+                    {% if news.status == 'final' %} Выпуск {% endif %}
+            </button>
+            
+            <ul class="dropdown-menu" aria-labelledby="rundownsDropdown">
+              <li><a class="dropdown-item" href="#">Монтаж</a></li>
+              <li><a class="dropdown-item" href="#">Правка</a></li>
+              <li><a class="dropdown-item" href="#">Выпуск</a></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>

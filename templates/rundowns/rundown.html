@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+
+{% block rundown %}
+
+    <div class="accordion" id="accordionRundown">
+
+        {% for news in news %}
+        
+            {% include "rundowns/components/rundownItem.html" %}
+
+        {% endfor %}
+
+    </div>
+    
+{% endblock %}
