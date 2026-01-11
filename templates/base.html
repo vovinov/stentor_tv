@@ -12,16 +12,39 @@
 </head>
 
 <body class="bg-light">
+
+  <!-- Навигация -->
   <nav class="navbar navbar-expand-lg navbar-light bg-white border-bottom">
     <div class="container">
       <a class="navbar-brand" href="{% url 'rundown_get_last' %}">STENTOR</a>
-      <button class="btn btn-outline-secondary btn-sm"
-        type="button"
-        data-bs-toggle="offcanvas"
-        data-bs-target="#rundownsSidebar"
-        aria-controls="rundownsSidebar">
-        Выпуски
-      </button>
+      <span class="">
+        {{ user.get_full_name }}
+      </span>
+      <div class="d-flex">
+        <button class="me-2 btn btn-outline-success btn-sm"
+                type="button"
+                data-bs-toggle="offcanvas"
+                data-bs-target="#createNewsCanvas"
+                aria-controls="createNewsCanvas">
+          Создать новость
+        </button>
+
+        <button class="me-2 btn btn-outline-secondary btn-sm"
+          type="button"
+          data-bs-toggle="offcanvas"
+          data-bs-target="#rundownsSidebar"
+          aria-controls="rundownsSidebar">
+          Выпуски
+        </button>
+
+        <form method="post" action="{% url 'logout' %}" class="m-0">
+          {% csrf_token %}
+          <button type="submit" class="btn btn-outline-danger btn-sm">
+            Выйти
+          </button>
+        </form>
+      </div>
+
     </div>
   </nav>
 
@@ -36,8 +59,8 @@
     <div class="offcanvas-header">
       <h5 class="offcanvas-title" id="rundownsSidebarLabel">Выпуски</h5>
       <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
-    </div>
-      
+    </div>      
+
     <div class="offcanvas-body p-0">
 
       <!-- Кнопка создания выпуска -->
@@ -155,7 +178,80 @@
 
   </div>
 
+  <!-- Боковая правая панель -->
+  <div class="offcanvas offcanvas-end" tabindex="-1" id="createNewsCanvas" aria-labelledby="createNewsCanvasLabel">
+    <div class="offcanvas-header">
+      <h5 class="offcanvas-title" id="createNewsCanvasLabel">Новая новость</h5>
+      <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+    </div>
+
+    <div class="offcanvas-body">
+
+      <form method="post" action="{% url "news_create" %}">
+        {% csrf_token %}
+
+        <div class="mb-2">
+          <label class="form-label">Заголовок</label>
+          <input class="form-control" name="title" maxlength="200" required>
+        </div>
+
+        <div class="mb-2">
+          <label class="form-label">Текст</label>
+          <textarea class="form-control" name="content" rows="6" required></textarea>
+        </div>
+
+        <button class="btn btn-success w-100 mt-3" type="submit">Сохранить</button>
+      </form>
+
+    </div>
+</div>
+
+  <!-- Окно логина -->
+  <div class="modal fade" id="loginModal" tabindex="-1" aria-hidden="true"
+     data-bs-backdrop="static" data-bs-keyboard="false">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+
+        <form method="post" action="{% url 'login' %}">
+          {% csrf_token %}
+
+          <div class="modal-header">
+            <h5 class="modal-title">Вход</h5>
+          </div>
+
+          <div class="modal-body">
+            <div class="mb-3">
+              <label class="form-label" for="email">Email</label>
+              <input class="form-control" type="email" id="email" name="username" required>
+            </div>
+
+            <div class="mb-3">
+              <label class="form-label" for="password">Пароль</label>
+              <input class="form-control" type="password" id="password" name="password" required>
+            </div>
+
+            <input type="hidden" name="next" value="{{ request.path }}">
+          </div>
+
+          <div class="modal-footer">
+            <button class="btn btn-primary w-100" type="submit">Войти</button>
+          </div>
+        </form>
+
+      </div>
+    </div>
+  </div>
+  
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
-  {% block scripts %}{% endblock %}
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const isAuth = {{ request.user.is_authenticated|yesno:"true,false" }};
+      if (!isAuth) {
+        const modalEl = document.getElementById('loginModal');
+        const modal = new bootstrap.Modal(modalEl);
+        modal.show();
+      }
+    });
+  </script>
 </body>
 </html>

@@ -2,16 +2,12 @@ from django.db import models
 
 from django.conf import settings
 
-STATUS_CHOICES = {
-    "mont": "Монтаж",
-    "edit": "Правка",
-    "final": "Эфир",
-}
+from apps.statuses.models import Status
 
 class News(models.Model):
-    title = models.CharField(max_length=200)
+    title = models.CharField(max_length=200, unique=True)
     content = models.TextField()
-    status = models.CharField(choices=STATUS_CHOICES, default="mont")
+    status = models.ForeignKey(Status, on_delete=models.DO_NOTHING)
     
     class Meta:
         verbose_name_plural = "News"
