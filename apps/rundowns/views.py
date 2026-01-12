@@ -5,10 +5,15 @@ from django.views.decorators.http import require_POST
 
 from apps.rundowns.models import Rundown
 
+
 def rundown_get_last(request):
     today = datetime.now()
-    rundown = Rundown.objects.filter(air_date__date=today).order_by("-air_date").first()
-    return render(request, "rundowns/rundown.html", context={"today": today, "rundown": rundown})
+    rundown = Rundown.objects.all().first()
+    print(rundown.randown_items)
+    return render(
+        request, "rundowns/rundown.html", context={"today": today, "rundown": rundown}
+    )
+
 
 @require_POST
 def rundown_create(request):
@@ -21,8 +26,5 @@ def rundown_create(request):
     else:
         dt = timezone.now()
 
-    Rundown.objects.create(title= "123",air_datetime=dt)
+    Rundown.objects.create(title="123", air_datetime=dt)
     return redirect("index")
-
-
-

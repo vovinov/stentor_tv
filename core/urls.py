@@ -14,18 +14,20 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
+
 from django.contrib import admin
 from django.urls import path, include
 
 from debug_toolbar.toolbar import debug_toolbar_urls
 
 from apps.rundowns.views import rundown_get_last, rundown_create
-from apps.news.views import create_news
+from apps.news.views import news_create, news_get
+
 
 urlpatterns = [
     path("accounts/", include("django.contrib.auth.urls")),
-    path('admin/', admin.site.urls),
-    path('', rundown_get_last, name="rundown_get_last"),
-    path('news/create/', create_news, name="news_create"),
+    path("admin/", admin.site.urls),
+    path("", rundown_get_last, name="rundown_get_last"),
+    path("news/create/", news_create, name="news_create"),
     path("rundowns/create/", rundown_create, name="rundown_create"),
 ] + debug_toolbar_urls()
