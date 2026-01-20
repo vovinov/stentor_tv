@@ -37,12 +37,6 @@
           Выпуски
         </button>
 
-        <form method="post" action="{% url 'logout' %}" class="m-0">
-          {% csrf_token %}
-          <button type="submit" class="btn btn-outline-danger btn-sm">
-            Выйти
-          </button>
-        </form>
       </div>
 
     </div>
@@ -54,7 +48,7 @@
     {% endblock %}
   </main>
 
-  <!-- Боковая левая панель --> 
+  <!-- Левая панель --> 
   <div class="offcanvas offcanvas-start" tabindex="-1" id="rundownsSidebar" aria-labelledby="rundownsSidebarLabel">
     <div class="offcanvas-header">
       <h5 class="offcanvas-title" id="rundownsSidebarLabel">Выпуски</h5>
@@ -84,7 +78,7 @@
         <div class="modal-dialog modal-dialog-centered">
           <div class="modal-content">
 
-            <form method="post" action="{% url 'rundown_create' %}">
+            <form method="post" action="#">
               {% csrf_token %}
 
               <div class="modal-header">
@@ -178,7 +172,7 @@
 
   </div>
 
-  <!-- Боковая правая панель -->
+  <!-- Правая панель -->
   <div class="offcanvas offcanvas-end" tabindex="-1" id="createNewsCanvas" aria-labelledby="createNewsCanvasLabel">
     <div class="offcanvas-header">
       <h5 class="offcanvas-title" id="createNewsCanvasLabel">Новая новость</h5>
@@ -187,7 +181,7 @@
 
     <div class="offcanvas-body">
 
-      <form method="post" action="{% url "news_create" %}">
+      <form method="post" action="{% url "news:news_create" %}">
         {% csrf_token %}
 
         <div class="mb-2">
@@ -206,41 +200,6 @@
     </div>
 </div>
 
-  <!-- Окно логина -->
-  <div class="modal fade" id="loginModal" tabindex="-1" aria-hidden="true"
-     data-bs-backdrop="static" data-bs-keyboard="false">
-    <div class="modal-dialog modal-dialog-centered">
-      <div class="modal-content">
-
-        <form method="post" action="{% url 'login' %}">
-          {% csrf_token %}
-
-          <div class="modal-header">
-            <h5 class="modal-title">Вход</h5>
-          </div>
-
-          <div class="modal-body">
-            <div class="mb-3">
-              <label class="form-label" for="email">Email</label>
-              <input class="form-control" type="email" id="email" name="username" required>
-            </div>
-
-            <div class="mb-3">
-              <label class="form-label" for="password">Пароль</label>
-              <input class="form-control" type="password" id="password" name="password" required>
-            </div>
-
-            <input type="hidden" name="next" value="{{ request.path }}">
-          </div>
-
-          <div class="modal-footer">
-            <button class="btn btn-primary w-100" type="submit">Войти</button>
-          </div>
-        </form>
-
-      </div>
-    </div>
-  </div>
   
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
   <script>

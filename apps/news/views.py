@@ -1,35 +1,41 @@
-from django.shortcuts import render, redirect
+from datetime import datetime
+from django.shortcuts import get_object_or_404, render, redirect
+
+from apps.rundowns.models import Rundown, RundownNews
 
 from .models import News
-from apps.statuses.models import Status
-
-
-def news_get(request):
-    news = News.objects.all()
-    return render(request, "news/news_show_all.html", context={"news": news})
 
 
 def news_create(request):
 
     title = request.POST.get("title")
     content = request.POST.get("content")
-    status = Status.objects.get(title="Создано")
 
-    news, created = News.objects.get_or_create(
-        title=title,
-        defaults={"content": content, "status": status},
+    news = News.objects.create(title=title, content=content)
+
+    rundown = Rundown.objects.all().first()
+
+    last_pos = (
+        RundownNews.objects.filter(rundown=rundown)
+        .order_by("-position")
+        .values_list("position", flat=True)
+        .first()
+        or 0
     )
 
-    if not created:
-        return render(
-            request,
-            "rundowns/rundown.html",
-            {
-                "error_modal": True,
-                "error_text": "Новость с таким заголовком уже существует.",
-                "title_value": title,
-                "content_value": content,
-            },
-        )
+    RundownNews.objects.get_or_create(
+        rundown=rundown, news=news, defaults={"position": last_pos + 1}
+    )
 
-    return redirect("index")
+    return redirect(
+        "index",
+    )
+
+
+def news_delete(request, item_id):
+
+    RundownNews.objects.get(id=item_id).delete()
+
+    return redirect(
+        "index",
+    )

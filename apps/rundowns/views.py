@@ -7,11 +7,13 @@ from apps.rundowns.models import Rundown
 
 
 def rundown_get_last(request):
-    today = datetime.now()
     rundown = Rundown.objects.all().first()
-    print(rundown.randown_items)
+    rundown_news = Rundown.objects.all().first().rundowns_items.order_by("position")
+
     return render(
-        request, "rundowns/rundown.html", context={"today": today, "rundown": rundown}
+        request,
+        "rundowns/rundown.html",
+        context={"rundown_news": rundown_news, "rundown": rundown},
     )
 
 

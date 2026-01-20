@@ -1,15 +1,28 @@
-<div class="accordion-item" style="color: #198754">
+<div class="accordion-item m-2">
+
+    <!-- Кнопка -->
     <h2 class="accordion-header">
       <div class="d-flex">
+        {{r.position}}
         <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#accord{{forloop.counter}}" aria-expanded="true" aria-controls="accord{{forloop.counter}}">
-          {{news.title}}
+          {{r.news.title}}
         </button>
+
+        
+          <form method="post" name="news" action="{% url "news:news_delete" r.id %}">
+            {% csrf_token %}
+            <button class="btn btn-danger" type="submit">Удалить из выпуска</button>
+          </form>
+        
+
       </div>
     </h2>
+
+    <!-- Тело Air -->
     <div id="accord{{forloop.counter}}" class="accordion-collapse collapse" data-bs-parent="#accordionRundown">
       <div class="accordion-body">
-        <div class="d-flex">
-          <div>{{news.content}}</div>
+        <div class="d-flex ">
+          <div>{{r.content}}</div>
           <button type="btn">123</button>
           <div class="dropdown">
             <button class="btn 
@@ -35,4 +48,6 @@
         </div>
       </div>
     </div>
+
+    
   </div>

@@ -2,16 +2,19 @@
 
 {% block rundown %}
 
-    <div class="d-flex p-2 fs-3 justify-content-between align-items-center">
-        <div class="">{{today.date}}</div>
-        <div class="block p-2">Duration: </div>        
-    </div>
+    <h2>{{rundown.air_date}}</h2>
 
-    Новости - {{rundown.position}}
+    <div class="accordion" id="accordionRundownAir">
 
-    <div class="accordion" id="accordionRundown"> 
+
+        {% for r in rundown_news %} 
+
+            {% include "rundowns/components/rundown_item.html" %}
+
+        {% endfor %}
         
 
     </div>
-    
+
+
 {% endblock %}

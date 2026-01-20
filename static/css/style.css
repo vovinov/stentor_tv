@@ -3,11 +3,12 @@
   width: 0;
   height: 0;
   margin-left: 0;
-}
+};
 
 .accordion-button:focus {
   box-shadow: none;
   border-color: rgba(0,0,0,.125);
-}
+};
+
 
 

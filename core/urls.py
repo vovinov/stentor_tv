@@ -21,13 +21,11 @@ from django.urls import path, include
 from debug_toolbar.toolbar import debug_toolbar_urls
 
 from apps.rundowns.views import rundown_get_last, rundown_create
-from apps.news.views import news_create, news_get
 
 
 urlpatterns = [
     path("accounts/", include("django.contrib.auth.urls")),
     path("admin/", admin.site.urls),
-    path("", rundown_get_last, name="rundown_get_last"),
-    path("news/create/", news_create, name="news_create"),
-    path("rundowns/create/", rundown_create, name="rundown_create"),
+    path("news/", include("apps.news.urls")),
+    path("", rundown_get_last, name="index"),
 ] + debug_toolbar_urls()
