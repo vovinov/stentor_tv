@@ -1,9 +1,21 @@
 from datetime import datetime
 from django.shortcuts import get_object_or_404, render, redirect
+from django.urls import reverse_lazy
+from django.views.generic.edit import UpdateView
 
 from apps.rundowns.models import Rundown, RundownNews
 
 from .models import News
+from .forms import NewsEditForm
+
+
+def news_content(request):
+    news = News.objects.all().order_by("created")[:5]
+    return render(request, "news/news_content.html")
+
+
+def news_create_form(request):
+    return render(request, "news/news_create.html")
 
 
 def news_create(request):
@@ -11,7 +23,10 @@ def news_create(request):
     title = request.POST.get("title")
     content = request.POST.get("content")
 
-    news = News.objects.create(title=title, content=content)
+    news, created = News.objects.get_or_create(title=title)
+
+    if created:
+        news.content = content
 
     rundown = Rundown.objects.all().first()
 
@@ -27,15 +42,18 @@ def news_create(request):
         rundown=rundown, news=news, defaults={"position": last_pos + 1}
     )
 
-    return redirect(
-        "index",
-    )
+    return redirect("rundowns:rundown_get", rundown_id=rundown.id)
+
+
+class NewsUpdateView(UpdateView):
+
+    model = News
+    form_class = NewsEditForm
+    template_name = "news/news_edit.html"
+    success_url = reverse_lazy("news_list")
 
 
 def news_delete(request, item_id):
-
-    RundownNews.objects.get(id=item_id).delete()
-
-    return redirect(
-        "index",
-    )
+    rundown_news = RundownNews.objects.get(id=item_id)
+    rundown_news.delete()
+    return redirect("rundowns:rundown_get", rundown_id=rundown_news.rundown.id)

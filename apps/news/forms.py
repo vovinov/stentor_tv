@@ -1,14 +1,24 @@
 from django import forms
-from datetime import timedelta
+
 
 from apps.news.models import News
 
-class NewsCreateForm(forms.ModelForm):
-    # параметры для добавления в rundown
-    rundown_id = forms.IntegerField(required=True)
-    position = forms.IntegerField(required=False, min_value=0, initial=0)
-    duration_seconds = forms.IntegerField(required=False, min_value=0, initial=0)
+
+class NewsEditForm(forms.ModelForm):
 
     class Meta:
         model = News
-        fields = ["title", "content", "status"]
+        fields = "__all__"
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields["title"].widget.attrs.update({"class": "form-control"})
+        self.fields["content"].widget.attrs.update(
+            {"class": "form-control", "rows": 10}
+        )
+
+    # # В NewsEditForm добавьте:
+    # def get_form(self):
+    #     form = super().get_form()
+    #     print("FORM VALUES:", form.cleaned_data if form.is_valid() else "NOT VALID")
+    #     return form

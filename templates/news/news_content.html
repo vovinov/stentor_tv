@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<a href={% url "news:news_create_form" %} type="button" class="me-2 btn btn-outline-success"> 
+Создание новости
+</a>
+<a href="#" type="button" class="me-2 btn btn-outline-primary"> 
+Поиск новости
+</a>
+{% endblock  %}

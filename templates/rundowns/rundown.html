@@ -1,19 +1,18 @@
 {% extends "base.html" %}
 
-{% block rundown %}
+{% block content %}
 
-    <h2>{{rundown.air_date}}</h2>
+
+    <h2 class="text-center">Выпуск от {{rundown.air_date|date:"d F"}} на {{rundown.air_date|date:"H"}} часов</h2>
 
     <div class="accordion" id="accordionRundownAir">
 
 
-        {% for r in rundown_news %} 
+        {% for r in rundown.rundowns_items.all %}
 
-            {% include "rundowns/components/rundown_item.html" %}
+        {% include "rundowns/components/rundown_item.html" %}
 
         {% endfor %}
-        
-
     </div>
 
 

@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+
+{% block  content %} 
+
+  <form method="post" action="{% url "news:news_create" %}">
+    {% csrf_token %}
+
+    <div class="mb-2">
+      <label class="form-label">Заголовок</label>
+      <input class="form-control" name="title" maxlength="200" required>
+    </div>
+
+    <div class="mb-2">
+      <label class="form-label">Текст</label>
+      <textarea class="form-control" name="content" rows="6" required></textarea>
+    </div>
+
+    <button class="btn btn-success w-100 mt-3" type="submit">Сохранить</button>
+  </form>
+
+  
+
+{% endblock %} 
+
+
+

@@ -2,48 +2,30 @@
 
     <!-- Кнопка -->
     <h2 class="accordion-header">
-      <div class="d-flex">
-        {{r.position}}
+      <div class="d-flex align-items-center">
+        <p class="mx-2">{{r.position}}</p>
         <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#accord{{forloop.counter}}" aria-expanded="true" aria-controls="accord{{forloop.counter}}">
           {{r.news.title}}
         </button>
-
-        
-          <form method="post" name="news" action="{% url "news:news_delete" r.id %}">
+          
+          <form method="" name="news" action="{% url "news:news_delete" r.id %}">
             {% csrf_token %}
             <button class="btn btn-danger" type="submit">Удалить из выпуска</button>
           </form>
+          <form method="" action="{% url "news:news_edit" r.news.id %}">
+            {% csrf_token %}
+            <button class="btn btn-info" type="submit">Редактировать</button>
+          </form>
         
-
       </div>
     </h2>
 
     <!-- Тело Air -->
     <div id="accord{{forloop.counter}}" class="accordion-collapse collapse" data-bs-parent="#accordionRundown">
       <div class="accordion-body">
-        <div class="d-flex ">
-          <div>{{r.content}}</div>
-          <button type="btn">123</button>
-          <div class="dropdown">
-            <button class="btn 
-                    {% if news.status == 'mont' %} btn-info {% endif %}
-                    {% if news.status == 'edit' %} btn-warning {% endif %}
-                    {% if news.status == 'final' %} btn-success {% endif %}
-                    dropdown-toggle"
-                    type="button"
-                    id="rundownsDropdown"
-                    data-bs-toggle="dropdown"
-                    aria-expanded="false">
-                    {% if news.status == 'mont' %} Монтаж {% endif %}
-                    {% if news.status == 'edit' %} Правка {% endif %}
-                    {% if news.status == 'final' %} Эфир {% endif %}
-            </button>
-            
-            <ul class="dropdown-menu" aria-labelledby="rundownsDropdown">
-              <li><a class="dropdown-item" href="#">Монтаж</a></li>
-              <li><a class="dropdown-item" href="#">Правка</a></li>
-              <li><a class="dropdown-item" href="#">Эфир</a></li>
-            </ul>
+        <div class="d-flex">
+          <div>{{r.news.content}}</div>
+
           </div>
         </div>
       </div>

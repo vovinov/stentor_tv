@@ -1,216 +1,59 @@
 {% load static %}
 <!doctype html>
 <html lang="ru">
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>{% block title %}STENTOR TV{% endblock %}</title>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>STENTOR TV</title>
 
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet">
-  <link rel="stylesheet" href="{% static 'css/style.css' %}">
-  {% block head %}{% endblock %}
-</head>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+  </head>
 
-<body class="bg-light">
+  <body>
 
-  <!-- Навигация -->
-  <nav class="navbar navbar-expand-lg navbar-light bg-white border-bottom">
     <div class="container">
-      <a class="navbar-brand" href="#">STENTOR</a>
-      <span class="">
-        {{ user.get_full_name }}
-      </span>
-      <div class="d-flex">
-        <button class="me-2 btn btn-outline-success btn-sm"
-                type="button"
-                data-bs-toggle="offcanvas"
-                data-bs-target="#createNewsCanvas"
-                aria-controls="createNewsCanvas">
-          Создать новость
-        </button>
 
-        <button class="me-2 btn btn-outline-secondary btn-sm"
-          type="button"
-          data-bs-toggle="offcanvas"
-          data-bs-target="#rundownsSidebar"
-          aria-controls="rundownsSidebar">
-          Выпуски
-        </button>
-
-      </div>
-
-    </div>
-  </nav>
-
-  <main class="container py-5">
-    {% block rundown %}
-    
-    {% endblock %}
-  </main>
-
-  <!-- Левая панель --> 
-  <div class="offcanvas offcanvas-start" tabindex="-1" id="rundownsSidebar" aria-labelledby="rundownsSidebarLabel">
-    <div class="offcanvas-header">
-      <h5 class="offcanvas-title" id="rundownsSidebarLabel">Выпуски</h5>
-      <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
-    </div>      
-
-    <div class="offcanvas-body p-0">
-
-      <!-- Кнопка создания выпуска -->
-      <button type="button mb-3"
-        class="btn btn-success w-100"
-        data-bs-toggle="modal"
-        data-bs-target="#createRundownModal">
-        Создать выпуск
-      </button>
-
-      <!-- Кнопка поиска выпуска -->
-       <button type="button"
-        class="btn btn-primary w-100"
-        data-bs-toggle="modal"
-        data-bs-target="#pickRundownDayModal">
-        Выбрать выпуск
-      </button>    
-
-      <!-- Модальное окно с формой создания -->
-      <div class="modal fade" id="createRundownModal" tabindex="-1" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
-          <div class="modal-content">
-
-            <form method="post" action="#">
-              {% csrf_token %}
-
-              <div class="modal-header">
-                <h5 class="modal-title">Создать выпуск</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-              </div>
-
-              <div class="modal-body">
-                <div class="mb-3">
-                  <label class="form-label" for="airDate">Дата</label>
-                  <input type="date"
-                        id="airDate"
-                        name="air_date"
-                        class="form-control"
-                        value="{{ selected_date|default:'' }}"
-                        required>
-                </div>
-
-                <div class="mb-3">
-                  <label class="form-label" for="airTime">Время</label>
-                  <input type="time"
-                        id="airTime"
-                        name="air_time"
-                        class="form-control"
-                        value="12:00"
-                        required>
-                </div>
-
-                <div class="text-muted small">
-                  Будет создан выпуск на выбранные дату и время.
-                </div>
-              </div>
-
-              <div class="modal-footer">
-                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Отмена</button>
-                <button type="submit" class="btn btn-success">Создать</button>
-              </div>
-            </form>
-
-          </div>
+      <!-- Навигация -->
+      <nav class="navbar navbar-expand-lg navbar-light bg-white border-bottom">
+        <div class="container">
+          <a class="navbar-brand" href="{% url "index" %}">STENTOR</a>
+          {% if user.is_authenticated %}
+          {{ user.username.capitalize }}
+          <a href={% url "users:logout" %} type="button" class="me-2 btn btn-outline-secondary"> 
+            Выйти
+          </a>
+          {% endif %}
+        </div>
+      </nav>
+      
+      <div class="d-flex border-bottom py-2">
+        <div class="container">
+          <a href={% url "rundowns:rundowns_manage" %} type="button" class="me-2 btn btn-outline-secondary"> 
+            Выпуски
+          </a>        
+          <a href={% url "news:news_content" %} type="button" class="me-2 btn btn-outline-success"> 
+            Новости
+          </a>
         </div>
       </div>
 
-      <!-- Модальное окно с показом -->
-      <div class="modal fade" id="pickRundownDayModal" tabindex="-1" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
-          <div class="modal-content">
-
-            <form method="get" action="">
-              <div class="modal-header">
-                <h5 class="modal-title">Выбор дня</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-              </div>
-
-              <div class="modal-body">
-                <label class="form-label" for="pickDay">Дата</label>
-                <input type="date"
-                      id="pickDay"
-                      name="date"
-                      class="form-control"
-                      value="{{ selected_date }}"
-                      required>
-              </div>
-
-              <div class="modal-footer">
-                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Отмена</button>
-                <button type="submit" class="btn btn-primary">Показать</button>
-              </div>
-
-              {% if selected_date %}
-                <hr class="my-3">
-
-                <div class="list-group">
-                  {% for r in rundowns %}
-                    <a class="list-group-item list-group-item-action"
-                      href="#">
-                      {{r.air_time}}
-                    </a>
-                  {% empty %}
-                    <div class="text-muted">На этот день выпусков нет.</div>
-                  {% endfor %}
-                </div>
-              {% endif %}
-            </form>
-
-          </div>
-        </div>
-      </div>
+      <main class="container py-3">
+        {% block content %} {% endblock %}
+      </main>
 
     </div>
-
-  </div>
-
-  <!-- Правая панель -->
-  <div class="offcanvas offcanvas-end" tabindex="-1" id="createNewsCanvas" aria-labelledby="createNewsCanvasLabel">
-    <div class="offcanvas-header">
-      <h5 class="offcanvas-title" id="createNewsCanvasLabel">Новая новость</h5>
-      <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
-    </div>
-
-    <div class="offcanvas-body">
-
-      <form method="post" action="{% url "news:news_create" %}">
-        {% csrf_token %}
-
-        <div class="mb-2">
-          <label class="form-label">Заголовок</label>
-          <input class="form-control" name="title" maxlength="200" required>
-        </div>
-
-        <div class="mb-2">
-          <label class="form-label">Текст</label>
-          <textarea class="form-control" name="content" rows="6" required></textarea>
-        </div>
-
-        <button class="btn btn-success w-100 mt-3" type="submit">Сохранить</button>
-      </form>
-
-    </div>
-</div>
-
-  
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
-  <script>
-    document.addEventListener('DOMContentLoaded', () => {
-      const isAuth = {{ request.user.is_authenticated|yesno:"true,false" }};
-      if (!isAuth) {
-        const modalEl = document.getElementById('loginModal');
-        const modal = new bootstrap.Modal(modalEl);
-        modal.show();
-      }
-    });
-  </script>
-</body>
+   
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+      document.addEventListener('DOMContentLoaded', () => {
+        const isAuth = {{ request.user.is_authenticated|yesno:"true,false" }};
+        if (!isAuth) {
+          const modalEl = document.getElementById('loginModal');
+          const modal = new bootstrap.Modal(modalEl);
+          modal.show();
+        }
+      });
+    </script>
+  </body>
 </html>

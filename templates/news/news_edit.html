@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        
+        <div class="d-flex flex-column">
+            <div class="mb-3">
+                <label>Заголовок</label>
+                <input type="text" 
+                        name="{{ form.title.name }}" 
+                        value="{{ form.title.value|default_if_none:'' }}"
+                        class="form-control" required>
+                {% if form.title.errors %}<div class="text-danger">{{ form.title.errors }}</div>{% endif %}
+            </div>
+            
+            <div class="mb-3">
+                <label>Текст</label>
+                <textarea name="{{ form.content.name }}" 
+                            class="form-control" rows="10">{{ form.content.value|default_if_none:'' }}</textarea>
+            </div>
+        </div>
+        
+        <button type="submit" class="btn btn-primary">Сохранить</button>
+    </form>
+
+
+{% endblock rundown %}

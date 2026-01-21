@@ -1,11 +1,11 @@
-from datetime import datetime, timedelta
+from django.utils import timezone
 from django.db import models
 
 from apps.news.models import News
 
 
 class Rundown(models.Model):
-    air_date = models.DateTimeField()
+    air_date = models.DateTimeField(default=timezone.localtime())
     news = models.ManyToManyField(News, through="RundownNews")
 
     class Meta:
@@ -22,7 +22,7 @@ class RundownNews(models.Model):
     news = models.ForeignKey(
         News, on_delete=models.CASCADE, related_name="rundowns_items"
     )
-    position = models.PositiveIntegerField(default=0)
+    position = models.PositiveIntegerField(default=1000)
     block = models.ForeignKey("Category", on_delete=models.SET_NULL, null=True)
 
     class Meta:
