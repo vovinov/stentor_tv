@@ -1,16 +1,21 @@
 {% extends "base.html" %}
 
 {% block content %}
+<div class="my-5">
   <form method="post" class="row justify-content-center align-items-center">
     <div class="col-4 text-center">
       {% csrf_token %}
-      {{ form.as_p }}
-      <p><button type="submit">Войти</button></p>
+      <div class="form-error">{{ form.non_field_errors }}</div>
+      {% for f in form %}
+      <label class="form-label" for="{{ f.id_for_label }}">{{f.label}}: </label>{{ f }}</p>
+      <div class="form-error">{{ f.errors }}</div>
+      {% endfor %}
+      <p><button type="submit" class="btn btn-primary">Войти</button></p>
 
     </div>
     
   </form>
-  
+</div>
 
 {% endblock  %}
 

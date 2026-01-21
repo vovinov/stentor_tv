@@ -120,6 +120,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 AUTHENTICATION_BACKENDS = [
     "django.contrib.auth.backends.ModelBackend",
+    "apps.users.authentication.EmailAuthBackend",
 ]
 
 
@@ -147,4 +148,6 @@ STATIC_URL = "/static/"
 STATICFILES_DIRS = [BASE_DIR / "static"]
 STATIC_ROOT = BASE_DIR / "staticfiles"
 
+
 LOGOUT_REDIRECT_URL = "/"
+LOGIN_REDIRECT_URL = "index"

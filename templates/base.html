@@ -17,7 +17,7 @@
       <!-- Навигация -->
       <nav class="navbar navbar-expand-lg navbar-light bg-white border-bottom">
         <div class="container">
-          <a class="navbar-brand" href="{% url "index" %}">STENTOR</a>
+          <a class="navbar-brand" href="#">STENTOR</a>
           {% if user.is_authenticated %}
           {{ user.username.capitalize }}
           <a href={% url "users:logout" %} type="button" class="me-2 btn btn-outline-secondary"> 
@@ -27,6 +27,8 @@
         </div>
       </nav>
       
+      {% if user.is_authenticated %}
+      <!-- Кнопки -->
       <div class="d-flex border-bottom py-2">
         <div class="container">
           <a href={% url "rundowns:rundowns_manage" %} type="button" class="me-2 btn btn-outline-secondary"> 
@@ -37,8 +39,9 @@
           </a>
         </div>
       </div>
+      {% endif %}
 
-      <main class="container py-3">
+      <main>
         {% block content %} {% endblock %}
       </main>
 
