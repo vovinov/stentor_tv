@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 
-{% block  content %} 
+{% block  content %}
 
   <form method="post" action="{% url "news:news_create" %}">
     {% csrf_token %}
@@ -18,7 +18,7 @@
     <button class="btn btn-success w-100 mt-3" type="submit">Сохранить</button>
   </form>
 
-  
+</div>
 
 {% endblock %} 
 

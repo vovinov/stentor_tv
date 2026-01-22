@@ -2,35 +2,44 @@
 
 {% block content %}
 
-  <h2 class="text-center mb-3">Выпуски за {{today|date:"d F"}}</h2>    
+  <h2 class="my-3 text-center">Выберите выпуск</h2>
 
-    <!-- Кнопка создания выпуска -->
-    <form method="post" name="news" action="{% url "rundowns:rundowns_create" %}">
-      {% csrf_token %}
-      <button class="btn btn-success mb-3" type="submit">Создать выпуск</button>
-    </form>   
+  <div class="container-fluid">
+    <div class="row">
+      {% if form %}      
+      <!-- ЛЕВАЯ колонка -->
+      <div class="col-lg-4 col-md-5 col-sm-12">
+        <div class="card sticky-top" style="top: 20px;">
+          <div class="card-header">Выбор даты</div>
+          <div class="card-body">
+            <form method="post" action="{% url "rundowns:rundowns_manage" %}">
+              {% csrf_token %}
+              {{ form }}
+              <button type="submit" class="btn btn-primary w-100">Показать</button>
+            </form>
+          </div>
+        </div>
+      </div>
+      {% endif %}
+      <!-- ПРАВАЯ колонка -->
+      <div class="{% if form %}col-lg-8 col-md-7 col-sm-12 {% else %} col-12 {% endif %}">
+        <div id="content-area">
+          <ul class="list-group">
+            {% for r in rundowns %}
+            <li class="list-group-item">
+              <a  class="fw-bold fs-5 w-100 btn" 
+                  href="{% url "rundowns:rundowns_detail" r.id %}">
+                  {% comment %} href="#"> {% endcomment %}
+              {{r.air_time}}
+              
+              </a>
+            </li>
+            {% endfor %}
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
 
-    <!-- Список выпусков -->
-    <div class="list-group">
 
-
-      {% for r in rundowns %}
-
-      <a href="{% url "rundowns:rundown_get" r.id %}" class="list-group-item list-group-item-action">{{ r.air_date|date:"H" }}</a>
-      
-      {% endfor %}
-    </div>   
-
-    
-
-{% endblock %}
-
-
-
-{% comment %} 
-<!-- Кнопка поиска выпуска -->
-  <button type="button"
-    class="btn btn-primary">
-    Выбрать выпуск
-  </button> 
-{% endcomment %}
+  {% endblock %}

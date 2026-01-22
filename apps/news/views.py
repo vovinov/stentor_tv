@@ -10,8 +10,8 @@ from .forms import NewsEditForm
 
 
 def news_content(request):
-    news = News.objects.all().order_by("created")[:5]
-    return render(request, "news/news_content.html")
+    news = News.objects.all().order_by("created")
+    return render(request, "news/news_content.html", {"news": news})
 
 
 def news_create_form(request):

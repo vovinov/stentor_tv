@@ -1,18 +1,21 @@
-from django.utils import timezone
+from django.contrib.auth import get_user_model
 from django.db import models
-
 from apps.news.models import News
 
 
 class Rundown(models.Model):
-    air_date = models.DateTimeField(default=timezone.localtime())
+    air_date = models.CharField(max_length=10, null=True)
+    air_time = models.IntegerField(default=0)
+    created = models.DateTimeField(auto_now_add=True, null=True)
+    updated = models.DateTimeField(auto_now=True)
     news = models.ManyToManyField(News, through="RundownNews")
+    creator = models.ForeignKey(get_user_model(), on_delete=models.SET_NULL, null=True)
 
     class Meta:
         ordering = ["-air_date"]
 
     def __str__(self):
-        return f"{self.air_date}"
+        return f"{self.air_date} ---- {self.air_time}"
 
 
 class RundownNews(models.Model):

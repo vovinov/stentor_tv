@@ -7,6 +7,7 @@
     <title>STENTOR TV</title>
 
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.1/font/bootstrap-icons.css">
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
   </head>
 
@@ -16,33 +17,31 @@
 
       <!-- Навигация -->
       <nav class="navbar navbar-expand-lg navbar-light bg-white border-bottom">
-        <div class="container">
-          <a class="navbar-brand" href="#">STENTOR</a>
-          {% if user.is_authenticated %}
-          {{ user.username.capitalize }}
-          <a href={% url "users:logout" %} type="button" class="me-2 btn btn-outline-secondary"> 
-            Выйти
-          </a>
-          {% endif %}
-        </div>
+        <a class="navbar-brand" href="{% url "index" %}">STENTOR</a>
+        {% if user.is_authenticated %}
+        {{ user.username.capitalize }}
+        <a href={% url "users:logout" %} type="button" class="me-2 btn btn-outline-secondary"> 
+          Выйти
+        </a>
+        {% endif %}
       </nav>
       
       {% if user.is_authenticated %}
       <!-- Кнопки -->
-      <div class="d-flex border-bottom py-2">
-        <div class="container">
-          <a href={% url "rundowns:rundowns_manage" %} type="button" class="me-2 btn btn-outline-secondary"> 
-            Выпуски
-          </a>        
-          <a href={% url "news:news_content" %} type="button" class="me-2 btn btn-outline-success"> 
-            Новости
-          </a>
-        </div>
+      <div class="d-flex border-bottom py-2"> 
+        <a href={% url "rundowns:rundowns_manage" %} type="button" class="me-2 btn btn-outline-secondary"> 
+          Выпуски
+        </a>        
+        <a href={% url "news:news_content" %} type="button" class="me-2 btn btn-outline-success"> 
+          Новости
+        </a> 
       </div>
       {% endif %}
 
       <main>
+        <div class="py-2">
         {% block content %} {% endblock %}
+        </div>
       </main>
 
     </div>

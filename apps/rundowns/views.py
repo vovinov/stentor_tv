@@ -1,8 +1,9 @@
 from django.utils import timezone
-from django.http import HttpResponseBadRequest
-from django.shortcuts import redirect, render
-from django.views.decorators.http import require_POST
 
+from django.shortcuts import redirect, render
+
+
+from apps.rundowns.forms import RundownsDateForm
 from apps.rundowns.models import Rundown
 from utils import round_to_hour
 
@@ -12,17 +13,26 @@ def index_get(request):
 
 
 def rundowns_manage(request):
-    today = timezone.localtime()
-    rundowns = Rundown.objects.filter(air_date__day=today.day)
+
+    if request.method == "POST":
+        date = request.POST.get("date")
+        rundowns = Rundown.objects.filter(air_date=date)
+        return render(request, "rundowns/rundown_manage.html", {"rundowns": rundowns})
+
+    else:
+        form = RundownsDateForm()
+        return render(request, "rundowns/rundown_manage.html", {"form": form})
+
+
+def rundowns_detail(request, rundown_id):
+    rundown = Rundown.objects.get(id=rundown_id)
 
     return render(
         request,
-        "rundowns/rundown_manage.html",
-        context={"today": today, "rundowns": rundowns},
+        "rundowns/rundowns_detail.html",
+        context={"rundown": rundown},
     )
 
-
-def rundown_get(request, rundown_id):
     rundown = Rundown.objects.get(id=rundown_id)
 
     return render(
@@ -33,8 +43,18 @@ def rundown_get(request, rundown_id):
 
 
 def rundowns_create(request):
+
+    today = timezone.localtime()
+
+    current_year = str(today.day)
+    current_month = str(today.month)
+    current_day = str(today.day)
+
+    air_date = f"{current_year}-{current_month}-{current_day}"
+    air_time = today.hour
+
     rundown, created = Rundown.objects.get_or_create(
-        air_date=round_to_hour(timezone.localtime())
+        air_date=air_date, air_time=air_time
     )
 
     if not created:

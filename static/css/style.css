@@ -10,5 +10,8 @@
   border-color: rgba(0,0,0,.125);
 };
 
+.accordion-button:not(.collapsed) {
+  background-color: white !important;
+};
 
 

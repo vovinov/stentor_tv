@@ -1,35 +1,35 @@
 <div class="accordion-item m-2">
 
-    <!-- Кнопка -->
-    <h2 class="accordion-header">
-      <div class="d-flex align-items-center">
-        <p class="mx-2">{{r.position}}</p>
-        <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#accord{{forloop.counter}}" aria-expanded="true" aria-controls="accord{{forloop.counter}}">
-          {{r.news.title}}
-        </button>
+  <!-- Кнопка -->
+  <h2 class="accordion-header">
+    <div class="d-flex align-items-center">
+      
+      <span class="px-3">{{r.position}}</span>
+      <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#accord{{forloop.counter}}" aria-expanded="true" aria-controls="accord{{forloop.counter}}">
+        {{r.news.title}}
+      </button>
           
-          <form method="" name="news" action="{% url "news:news_delete" r.id %}">
-            {% csrf_token %}
-            <button class="btn btn-danger" type="submit">Удалить из выпуска</button>
-          </form>
-          <form method="" action="{% url "news:news_edit" r.news.id %}">
-            {% csrf_token %}
-            <button class="btn btn-info" type="submit">Редактировать</button>
-          </form>
-        
-      </div>
-    </h2>
+      <form method="" name="news" action="{% url "news:news_delete" r.id %}">
+        {% csrf_token %}
+        <button class="btn btn-danger" type="submit"><i class="bi bi-trash"></i></button>
+      </form>
+      <form method="" action="{% url "news:news_edit" r.news.id %}">
+        {% csrf_token %}
+        <button class="btn btn-info" type="submit"><i class="bi bi-pencil-square"></i></button>
+      </form>
+      
+    </div>
+  </h2>
 
-    <!-- Тело Air -->
-    <div id="accord{{forloop.counter}}" class="accordion-collapse collapse" data-bs-parent="#accordionRundown">
-      <div class="accordion-body">
-        <div class="d-flex">
-          <div>{{r.news.content}}</div>
+  <!-- Тело Air -->
+  <div id="accord{{forloop.counter}}" class="accordion-collapse collapse" data-bs-parent="#accordionRundown">
+    <div class="accordion-body">
+      <div class="d-flex">
+        <div>{{r.news.content}}</div>
 
-          </div>
         </div>
       </div>
     </div>
-
-    
   </div>
+    
+</div>
