@@ -1,0 +1,45 @@
+<div class="accordion-item m-2">
+
+  <!-- Кнопка -->
+  <h2 class="accordion-header">
+    <div class="d-flex align-items-center">
+      <span class="px-3">{{r.position}}</span>
+      <span class="px-3">{{r.news.asset.duration}}</span>
+      <button class="d-flex justify-content-between accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#accord{{forloop.counter}}" aria-expanded="true" aria-controls="accord{{forloop.counter}}">
+        <span>{{r.news.title}}</span>
+        <span></span>
+      </button>
+      
+    </div>
+  </h2>
+
+  <!-- Тело Air -->
+  <div id="accord{{forloop.counter}}" class="accordion-collapse collapse" data-bs-parent="#accordionRundown">
+    <div class="accordion-body">
+      
+        <div class="card">
+          <div class="card-footer d-flex justify-content-between">
+            <div>
+              <i class="bi bi-film me-2"></i>
+              <span>{{r.news.asset|default:"нет контента"}}</span>
+            </div>
+            <span>{{r.news.asset.duration}}</span>
+          </div>
+          <div class="card-body">
+            <h4 class="card-title">{{r.news.title}}</h4>
+            <p class="card-text">{{r.news.content}}</p>
+          </div>
+          <div class="card-footer d-flex justify-content-end">
+            <a href="{% url "news:news_edit" r.news.id %}">
+              <button class="btn btn-warning me-2" type="submit"><i class="bi bi-pencil-square"></i></button>
+            </a>
+            <a href="{% url "news:news_delete" r.id %}">
+              <button class="btn btn-danger" type="submit"><i class="bi bi-trash"></i></button>
+            </a>
+          </div>
+        </div>
+      
+    </div>
+  </div>
+    
+</div>

@@ -14,4 +14,4 @@ class LoginUser(LoginView):
 
 def user_logout(request):
     logout(request)
-    return redirect("login")
+    return redirect("users:login")

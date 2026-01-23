@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% load rundown_tags %}
+
+{% block content %}
+
+
+    <h2 class="my-3 text-center">
+        Выпуск от {{rundown.air_day }}.{% if rundown.air_month < 10 %}0{% endif %}{{rundown.air_month}} на 
+        {{rundown.air_hour}} часов
+    </h2>
+
+    <div class="accordion" id="accordionRundownAir">
+       
+        {% for r in rundown.rundown.all %}
+
+            {% include "rundowns/rundown_item.html" %}
+        
+        {% endfor %}
+    </div>
+    <div class="container fixed-bottom">
+        <div class="">ТОТАЛ: {{rundown.duration}}</div>
+    </div>
+
+{% endblock %}

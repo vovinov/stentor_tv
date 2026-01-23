@@ -4,32 +4,35 @@ from apps.news.models import News
 
 
 class Rundown(models.Model):
-    air_date = models.CharField(max_length=10, null=True)
-    air_time = models.IntegerField(default=0)
+    air_hour = models.IntegerField(default=0)
+    air_day = models.IntegerField(default=0)
+    air_month = models.IntegerField(default=0)
+    air_year = models.IntegerField(default=0)
+    duration = models.DurationField(blank=True, null=True)
     created = models.DateTimeField(auto_now_add=True, null=True)
     updated = models.DateTimeField(auto_now=True)
     news = models.ManyToManyField(News, through="RundownNews")
-    creator = models.ForeignKey(get_user_model(), on_delete=models.SET_NULL, null=True)
+    creator = models.ForeignKey(
+        get_user_model(), on_delete=models.SET_NULL, null=True, related_name="rundown"
+    )
 
     class Meta:
-        ordering = ["-air_date"]
+        ordering = ["-air_year", "-air_month", "-air_day", "-air_hour"]
 
     def __str__(self):
-        return f"{self.air_date} ---- {self.air_time}"
+        return f"Выпуск {self.air_year} {self.air_month} {self.air_day} {self.air_hour}"
 
 
 class RundownNews(models.Model):
     rundown = models.ForeignKey(
-        Rundown, on_delete=models.CASCADE, related_name="rundowns_items"
+        Rundown, on_delete=models.CASCADE, related_name="rundown"
     )
     news = models.ForeignKey(
-        News, on_delete=models.CASCADE, related_name="rundowns_items"
+        News, on_delete=models.CASCADE, related_name="rundown_news"
     )
     position = models.PositiveIntegerField(default=1000)
-    block = models.ForeignKey("Category", on_delete=models.SET_NULL, null=True)
 
     class Meta:
-        ordering = ["position"]
         constraints = [
             models.UniqueConstraint(
                 fields=["rundown", "news"],
@@ -38,7 +41,7 @@ class RundownNews(models.Model):
         ]
 
     def __str__(self):
-        return f"{self.rundown} {self.news}"
+        return f"RundownNews --- {self.rundown} {self.news}"
 
 
 class Category(models.Model):

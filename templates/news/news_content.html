@@ -1,13 +1,15 @@
 {% extends "base.html" %}
 
 {% block content %}
-  <div class="pb-2 border-bottom">
-  <a href={% url "news:news_create_form" %} type="button" class="me-2 btn btn-outline-success"> 
-  <i class="bi bi-plus"></i>
-  </a>
-  <a href="#" type="button" class="me-2 btn btn-outline-primary"> 
-  Поиск новости
-  </a>
+  <div class="d-flex justify-content-between pb-2 border-bottom">
+    <a href={% url "news:news_create_form" %} type="button" class="me-2 btn btn-outline-success"> 
+    <i class="bi bi-plus"></i>
+    </a>
+    <form class="d-flex" method="POST" action="{% url "news:news_content" %}" role="search">
+      {% csrf_token %}
+      <input class="form-control me-2" name="title" type="search" placeholder="" aria-label="Search"/>
+      <button class="btn btn-outline-success" type="submit"><i class="bi bi-search"></i></button>
+    </form>
   </div>
 
   <h2 class="text-center my-3">Список новостей</h2>
@@ -18,9 +20,17 @@
       <div class="fw-bold">
         {{n.title}}
       </div>
-      <button class="btn btn-primary">Добавить в выпуск</button>
+      <div class="">
+        {{n.rundown_news.all|length}}
+        <a href="#">
+          <button type="button" class="btn btn-success"><i class="bi bi-plus"></i></button>
+        </a>       
+        <a href="{% url "news:news_edit" n.id %}">
+          <button class="btn btn-warning"><i class="bi bi-pencil-square"></i></button>
+        </a>
+      </div>
     </li>
   {% endfor %}
   </ul>
-
+  
 {% endblock  %}

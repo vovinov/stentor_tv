@@ -1,9 +1,16 @@
 {% extends "base.html" %}
 
 {% block content %}
+  
+  <div class="pb-2 border-bottom">
+    <a href={% url "rundowns:rundowns_create" %} type="button" class="me-2 btn btn-outline-success"> 
+    <i class="bi bi-plus"></i>
+    </a>
+    
+  </div>
 
   <h2 class="my-3 text-center">Выберите выпуск</h2>
-
+  {{news_id}}
   <div class="container-fluid">
     <div class="row">
       {% if form %}      
@@ -22,15 +29,14 @@
       </div>
       {% endif %}
       <!-- ПРАВАЯ колонка -->
-      <div class="{% if form %}col-lg-8 col-md-7 col-sm-12 {% else %} col-12 {% endif %}">
+      <div class="col-lg-8 col-md-7 col-sm-12">
         <div id="content-area">
           <ul class="list-group">
             {% for r in rundowns %}
             <li class="list-group-item">
               <a  class="fw-bold fs-5 w-100 btn" 
-                  href="{% url "rundowns:rundowns_detail" r.id %}">
-                  {% comment %} href="#"> {% endcomment %}
-              {{r.air_time}}
+                  href="{% url "rundowns:rundown_detail" r.id %}">
+              {{r.air_hour}}
               
               </a>
             </li>

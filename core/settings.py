@@ -53,6 +53,7 @@ USER_APPS = [
     "apps.news",
     "apps.rundowns",
     "apps.users",
+    "apps.assets",
 ]
 
 INSTALLED_APPS = DJANGO_APPS + THIRD_APPS + USER_APPS
@@ -148,6 +149,6 @@ STATIC_URL = "/static/"
 STATICFILES_DIRS = [BASE_DIR / "static"]
 STATIC_ROOT = BASE_DIR / "staticfiles"
 
-
-LOGOUT_REDIRECT_URL = "/"
+LOGIN_URL = "users:login"
+LOGOUT_REDIRECT_URL = "users:login"
 LOGIN_REDIRECT_URL = "index"
