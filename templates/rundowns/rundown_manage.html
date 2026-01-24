@@ -2,41 +2,17 @@
 
 {% block content %}
   
-  <div class="pb-2 border-bottom">
-    <a href={% url "rundowns:rundowns_create" %} type="button" class="me-2 btn btn-outline-success"> 
-    <i class="bi bi-plus"></i>
-    </a>
-  </div>
+  <button hx-get="{% url "rundowns:rundowns_create" %}" class="btn btn-success mb-2">Создать выпуск</button>
 
-  <h2 class="text-3xl text-center">Выберите выпуск</h2>
-  <div class="container-fluid">
-    <div class="row grid-cols-2">
-      
-      <calendar-date class="cally bg-base-100 border border-base-300 shadow-lg rounded-box">
-        <svg aria-label="Previous" class="fill-current size-4" slot="previous" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path fill="currentColor" d="M15.75 19.5 8.25 12l7.5-7.5"></path></svg>
-        <svg aria-label="Next" class="fill-current size-4" slot="next" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path fill="currentColor" d="m8.25 4.5 7.5 7.5-7.5 7.5"></path></svg>
-        <calendar-month></calendar-month>
-      </calendar-date>
-      
-      
-      <!-- ПРАВАЯ колонка -->
-      <div>
-        <div id="content-area">
-          <ul class="list-group">
-            {% for r in rundowns %}
-            <li class="list-group-item">
-              <a  class="fw-bold fs-5 w-100 btn" 
-                  href="{% url "rundowns:rundown_detail" r.id %}">
-              {{r.air_hour}}
-              
-              </a>
-            </li>
-            {% endfor %}
-          </ul>
-        </div>
-      </div>
+  <div class="" id="rundowns">
+    <h2 class="text-3xl text-center mb-10">Выберите день</h2>
+    <div class="text-center form-control w-full">
+      <label class="label" for="date_input">
+        <span class="label-text"></span>
+      </label>
+      <input class="input" id="date_input" hx-target="#rundowns" hx-vals='{"csrfmiddlewaretoken": "{{ csrf_token }}"}' hx-post={% url "rundowns:get_rundowns_by_date" %} hx-triggers="change" type="date" name="date">
     </div>
-  </div>
 
+  </div>
 
   {% endblock %}

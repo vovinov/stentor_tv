@@ -27,30 +27,30 @@ def search_news(request):
 
 
 def create_news(request):
+    form = NewsCreationForm(request.POST)
 
-    title = request.POST.get("title")
-    content = request.POST.get("content")
-    user = request.POST.get("user")
+    if form.is_valid():
+        news = form.save(commit=False)
+        news.user = request.user
+        news.save()
 
-    news, created = News.objects.get_or_create(
-        title=title, content=content, creator=user
-    )
+        rundown = Rundown.objects.all().first()
 
-    rundown = Rundown.objects.all().first()
+        last_pos = (
+            RundownNews.objects.filter(rundown=rundown)
+            .order_by("-position")
+            .values_list("position", flat=True)
+            .first()
+            or 0
+        )
 
-    last_pos = (
-        RundownNews.objects.filter(rundown=rundown)
-        .order_by("-position")
-        .values_list("position", flat=True)
-        .first()
-        or 0
-    )
+        RundownNews.objects.get_or_create(
+            rundown=rundown, news=news, defaults={"position": last_pos + 1}
+        )
 
-    RundownNews.objects.get_or_create(
-        rundown=rundown, news=news, defaults={"position": last_pos + 1}
-    )
+        context = {"n": news}
 
-    return redirect("rundowns:rundown_detail", rundown_id=rundown.id)
+    return render(request, "news/components/news_item.html", context)
 
 
 class NewsUpdateView(UpdateView):

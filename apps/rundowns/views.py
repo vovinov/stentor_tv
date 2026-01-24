@@ -65,3 +65,12 @@ def rundowns_create(request):
         return redirect("rundowns:rundown_manage")
     else:
         return redirect("rundowns:rundown_detail", rundown_id=rundown_new.id)
+
+
+def get_rundowns_by_date(request):
+    day = request.POST.get("date", "").split("-")[-1]
+    rundowns = Rundown.objects.filter(air_day=int(day))
+
+    context = {"rundowns": rundowns}
+
+    return render(request, "rundowns/rundown_list.html", context)
