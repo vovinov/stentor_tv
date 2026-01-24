@@ -1,0 +1,18 @@
+
+<dialog id="news_create_modal" class="modal">
+  <div class="modal-box">
+    <h3 class="text-lg font-bold">Создание новости</h3>
+    
+    <form method="post" action="{% url "news:create_news" %}">
+      {% csrf_token %}
+
+      {{form}}
+
+    </form>
+    <div class="modal-action">
+      <button type="submit" class="btn btn-primary">Создать новость</button>
+      <button class="btn" onclick="news_create_modal.close()">Закрыть</button>
+    </div>
+  </div>
+</dialog>
+

@@ -6,52 +6,46 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>STENTOR TV</title>
 
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.1/font/bootstrap-icons.css">
+    <link href="https://cdn.jsdelivr.net/npm/daisyui@5" rel="stylesheet" type="text/css" />
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
   </head>
 
-  <body>
+  <body class="py-5 px-5">
 
-    <div class="container">
-
-      <!-- Навигация -->
-      <nav class="navbar navbar-expand-lg navbar-light bg-white border-bottom">
-        <a  class="navbar-brand {% if not user.is_authenticated %} text-center {% endif %}" 
-            href="{% url "index" %}">
-            STENTOR
-        </a>
-        {% if user.is_authenticated %}
-        {{ user.username.capitalize }}
-        <a href={% url "users:logout" %} type="button" class="me-2 btn btn-outline-secondary"> 
-          Выйти
-        </a>
-        {% endif %}
-      </nav>
+    <!-- Навигация -->
+    <nav class="flex items-center justify-between mb-2">
+      <a  class="text-2xl mb-2 font-bold" 
+          href="{% url "index" %}">
+          STENTOR
+      </a>
       {% if user.is_authenticated %}
-      <div class="d-flex border-bottom py-2">
-        
-        <!-- Кнопки -->
-        <a href={% url "rundowns:rundowns_manage" %} type="button" class="me-2 btn btn-outline-secondary"> 
+      <span class="text-xl">{{ user.username.capitalize }}</span>
+      <button class="btn" hx-get="{% url "users:logout"%}" hx-trigger="click" hx-target="#main_content">Выйти</button>
+      {% endif %}
+    </nav>
+
+    <div class="grid grid-cols-12 gap-2">
+      {% if user.is_authenticated %}
+      <!-- Кнопки слева -->
+      <div class="col-span-1 flex flex-col">
+        <a href={% url "rundowns:rundowns_manage" %} type="button" class="btn btn-primary"> 
           Выпуски
         </a>        
-        <a href={% url "news:news_content" %} type="button" class="me-2 btn btn-outline-success"> 
+        <a href={% url "news:manage_news" %} type="button" class="btn btn-secondary"> 
           Новости
-        </a> 
-        
+        </a>
       </div>
       {% endif %}
-       
-      <main>
-        <div class="py-2">
+
+      <main class="col-span-11" id="main_content">
         {% block content %} {% endblock %}
-        </div>
       </main>
         
-      
     </div>
    
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/htmx.org@2.0.8/dist/htmx.min.js" integrity="sha384-/TgkGk7p307TH7EXJDuUlgG3Ce1UVolAOFopFekQkkXihi5u/6OCvVKyz1W+idaz" crossorigin="anonymous"></script>
+    <script type="module" src="https://unpkg.com/cally"></script>
     <script>
       document.addEventListener('DOMContentLoaded', () => {
         const isAuth = {{ request.user.is_authenticated|yesno:"true,false" }};

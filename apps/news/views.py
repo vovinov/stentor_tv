@@ -1,31 +1,32 @@
 from django.shortcuts import render, redirect
 from django.urls import reverse_lazy
 from django.views.generic.edit import UpdateView
-from django.utils import timezone
+from django.db.models import Q
 
 from apps.rundowns.models import Rundown, RundownNews
 
 from .models import News
-from .forms import NewsEditForm
+from .forms import NewsCreationForm, NewsEditForm
 
 
-def news_content(request):
+def manage_news(request):
+    news = News.objects.all()
 
-    if request.method == "POST":
-        title = request.POST["title"]
-        news = News.objects.filter(title__icontains=title)
+    context = {"news": news, "form": NewsCreationForm()}
 
-        return render(request, "news/news_content.html", {"news": news})
-    else:
-        news = News.objects.all().order_by("created")
-        return render(request, "news/news_content.html", {"news": news})
+    return render(request, "news/news_manage.html", context)
 
 
-def news_create_form(request):
-    return render(request, "news/news_create.html")
+def search_news(request):
+    search = request.GET.get("search", "")
+    news = News.objects.filter(Q(title__icontains=search))
+
+    context = {"news": news, "form": NewsCreationForm()}
+
+    return render(request, "news/components/news_list.html", context)
 
 
-def news_create(request):
+def create_news(request):
 
     title = request.POST.get("title")
     content = request.POST.get("content")
