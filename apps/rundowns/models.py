@@ -35,10 +35,12 @@ class RundownNews(models.Model):
     news = models.ForeignKey(
         News, on_delete=models.CASCADE, related_name="rundown_news"
     )
-    air_time = models.TimeField(default=timezone.localtime())
+    start_time = models.TimeField(default=timezone.localtime())
+    end_time = models.TimeField(default=timezone.localtime())
     position = models.PositiveIntegerField(default=1000)
 
     class Meta:
+        ordering = ["position"]
         constraints = [
             models.UniqueConstraint(
                 fields=["rundown", "news"],
@@ -47,6 +49,9 @@ class RundownNews(models.Model):
         ]
 
     def __str__(self):
+        return f"RundownNews --- {self.rundown} || Новость: {self.news}"
+
+    def __repr_(self):
         return f"RundownNews --- {self.rundown} || Новость: {self.news}"
 
 

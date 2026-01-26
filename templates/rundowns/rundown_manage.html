@@ -2,9 +2,8 @@
 
 {% block content %}
 
-  <div class="">
-    <button hx-get="{% url "rundowns:create_rundown" %}" hx-target="#main-content" class="btn btn-success mb-2">Создать выпуск</button>
-  </div>
+  
+  <a type="button" href="{% url "rundowns:create_rundown" %}" class="btn btn-success mb-2">Создать выпуск</a>
   
   <div class="" id="rundowns">
     <h2 class="text-3xl text-center mb-10">Выберите день</h2>
@@ -12,7 +11,7 @@
       <label class="label" for="date_input">
         <span class="label-text"></span>
       </label>
-      <input class="input" id="date_input" hx-target="#rundowns" hx-vals='{"csrfmiddlewaretoken": "{{ csrf_token }}"}' hx-post={% url "rundowns:get_rundowns_by_date" %} hx-triggers="change" type="date" name="date">
+      <input class="input" id="date_input" hx-target="#main_content" hx-vals='{"csrfmiddlewaretoken": "{{ csrf_token }}"}' hx-post={% url "rundowns:get_rundowns_by_date" %} hx-triggers="change" type="date" name="date">
     </div>
 
   </div>

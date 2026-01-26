@@ -6,7 +6,7 @@
 <ul class="grid grid-cols-12 gap-1">
   {% for r in rundowns %}
   <li>
-    <a href="{% url "rundowns:get_rundown_detail" r.id %}" class="btn btn-outline btn-info col-span-3">
+    <a href="{% url "rundowns:get_rundown_detail" r.id %}" class="p-6 btn btn-outline btn-info col-span-3">
       {{r.air_hour}}
     </a>
   </li>

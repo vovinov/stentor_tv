@@ -1,0 +1,9 @@
+<ul class="list bg-base-100">
+  
+  {% for r in rundown.rundown.all %}
+
+      {% include "rundowns/components/rundown_item.html" %}
+  
+  {% endfor %}
+
+</ul>

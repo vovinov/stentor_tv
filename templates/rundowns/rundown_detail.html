@@ -2,7 +2,9 @@
 {% load rundown_tags %}
 {% block content %}
 
-<button class="btn btn-success">Добавить новость</button>
+<a type="button" 
+href="{% url "news:show_news_to_add_rundown" rundown.id %}" 
+class="btn btn-success">Добавить новость</a>
 
 <h2 class="mb-5 text-center text-3xl font-bold">
     Выпуск от {{rundown.air_day}}.{% if rundown.air_month < 10 %}0{% endif %}{{rundown.air_month}} на 
@@ -10,23 +12,8 @@
 </h2>
 
 
-<div class="grid grid-cols-12 gap-2 mb-2">
-    <div class="col-span-1 font-bold">Позиция</div>
-    <div class="col-span-1 font-bold">Эфир</div>
-    <div class="col-span-8 font-bold">Новость</div>
-    <div class="col-span-1 font-bold">Статус</div>
-    <div class="col-span-1 font-bold">Время</div>
-</div>
-<div>
-
-    <ul class="list bg-base-100 rounded-box shadow-md">
-    {% for r in rundown.rundown.all %}
-
-        {% include "rundowns/components/rundown_item.html" %}
-    
-    {% endfor %}
-    </ul>
-   
+<div class="" id="rundowns_news_list">
+    {% include "rundowns/components/rundown_ul.html" %}
 </div>
 
 {% endblock content %}

@@ -1,4 +1,5 @@
 from django.utils import timezone
+from datetime import time
 
 
 def round_to_hour(dt):
@@ -14,3 +15,22 @@ def get_air_date():
     curremt_day = today.day
     curremt_year = today.year
     current_month = today.month
+
+
+def add_time(start_time, duration):
+    total_seconds = (
+        start_time.hour * 3600
+        + start_time.minute * 60
+        + start_time.second
+        + duration.total_seconds()
+    )
+
+    # Модульно по 24 часам (86400 секунд в сутках)
+    total_seconds = total_seconds % 86400
+
+    # Из секунд получаем часы, минуты, секунды
+    hours = int(total_seconds // 3600)
+    minutes = int((total_seconds % 3600) // 60)
+    seconds = int(total_seconds % 60)
+
+    return time(hours, minutes, seconds)

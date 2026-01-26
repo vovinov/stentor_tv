@@ -13,7 +13,7 @@ from .forms import NewsCreationForm, NewsEditForm
 def manage_news(request):
     news = News.objects.all()
 
-    context = {"news": news, "form": NewsCreationForm()}
+    context = {"news": news, "form": NewsCreationForm(), "add": False}
 
     return render(request, "news/news_manage.html", context)
 
@@ -57,6 +57,26 @@ def create_news(request):
         context = {"n": news}
 
     return render(request, "news/components/news_item.html", context)
+
+
+def show_news_to_add_rundown(request, rundown_id):
+    rundown = Rundown.objects.get(id=rundown_id)
+    news = News.objects.all().order_by("-created_at")
+
+    context = {"news": news, "rundown": rundown, "add": True}
+
+    return render(request, "news/news_manage.html", context)
+
+
+def add_news_to_rundown(request, rundown_id, news_id):
+    rundown = Rundown.objects.get(id=rundown_id)
+    news = News.objects.get(id=news_id)
+
+    RundownNews.objects.get_or_create(
+        rundown=rundown, news=news, position=len(rundown.news.all()) + 1
+    )
+
+    return redirect("rundowns:get_rundown_detail", rundown.id)
 
 
 class NewsUpdateView(UpdateView):

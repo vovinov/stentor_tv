@@ -9,7 +9,7 @@ admin.site.register(Rundown)
 
 @admin.register(RundownNews)
 class CustomRundownNewsAdmin(admin.ModelAdmin):
-    fields = ["rundown", "news", "air_time", "position"]
+    fields = ["rundown", "news", "start_time", "end_time", "position"]
 
 
 admin.site.register(Category)

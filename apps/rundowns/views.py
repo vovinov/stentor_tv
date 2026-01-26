@@ -1,10 +1,13 @@
 from django.utils import timezone
-from datetime import time
+from datetime import time, timedelta
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import redirect, render
+from django.db.models import Q
+from django.contrib.auth import get_user_model
 
 from apps.rundowns.forms import RundownsDateForm
 from apps.rundowns.models import Rundown, RundownNews
+from utils import add_time
 
 
 @login_required
@@ -34,13 +37,23 @@ def manage_rundowns(request):
 def get_rundown_detail(request, rundown_id):
     rundown = Rundown.objects.get(id=rundown_id)
 
+    start_hour = time(rundown.air_hour, 0, 0)
+    temp = "A"
+
     for pos, r in enumerate(rundown.rundown.all(), 1):
 
         if pos == 1:
-            new_time = time(r.rundown.air_hour, 0, 0)
-            r.air_time = new_time
+            r.start_time = start_hour
+        else:
+            r.start_time = temp
 
-        r.position = pos
+        if r.news.asset:
+            r.end_time = add_time(r.start_time, r.news.asset.duration)
+        else:
+            r.end_time = r.start_time
+
+        temp = r.end_time
+
         r.save()
 
     context = {"rundown": rundown}
@@ -53,7 +66,6 @@ def get_rundown_detail(request, rundown_id):
 
 
 def create_rundown(request):
-
     current_year = timezone.localtime().year
     current_month = timezone.localtime().month
     current_day = timezone.localtime().day
@@ -66,20 +78,23 @@ def create_rundown(request):
         air_month=current_month,
         air_day=current_day,
         air_hour=current_hour + 1,
-        creator=request.user,
+        created_by=request.user,
+        updated_by=request.user,
     )
 
     current_news = rundown.news.all()
 
     for n in current_news:
-        RundownNews.objects.create(rundown=rundown_new, news=n)
+        RundownNews.objects.create(
+            rundown=rundown_new, news=n, position=rundown.rundown.position
+        )
 
-    context = {"rundown_id": rundown_new.id}
+    context = {"rundown": rundown_new}
 
     if not created:
-        return redirect("rundowns:manage_rundown")
+        return redirect("rundowns:manage_rundowns")
     else:
-        return render(request, "rundowns/rundown_detail.html", context)
+        return redirect("rundowns:get_rundown_detail", context)
 
 
 def get_rundowns_by_date(request):
@@ -89,3 +104,41 @@ def get_rundowns_by_date(request):
     context = {"rundowns": rundowns}
 
     return render(request, "rundowns/components/rundown_list.html", context)
+
+
+def change_news_position_down(request, rundown_news_id):
+    rundown_news = RundownNews.objects.get(id=rundown_news_id)
+
+    after_pos = RundownNews.objects.get(
+        Q(rundown=rundown_news.rundown.pk) & Q(position=rundown_news.position + 1)
+    )
+
+    after_pos.position = rundown_news.position
+    rundown_news.position += 1
+
+    after_pos.save()
+    rundown_news.save()
+
+    rundown = Rundown.objects.get(id=rundown_news.rundown.pk)
+    context = {"rundown": rundown}
+
+    return render(request, "rundowns/components/rundown_ul.html", context)
+
+
+def change_news_position_up(request, rundown_news_id):
+    rundown_news = RundownNews.objects.get(id=rundown_news_id)
+
+    before_pos = RundownNews.objects.get(
+        Q(rundown=rundown_news.rundown.pk) & Q(position=rundown_news.position - 1)
+    )
+
+    before_pos.position = rundown_news.position
+    rundown_news.position -= 1
+
+    before_pos.save()
+    rundown_news.save()
+
+    rundown = Rundown.objects.get(id=rundown_news.rundown.pk)
+    context = {"rundown": rundown}
+
+    return render(request, "rundowns/components/rundown_ul.html", context)
