@@ -1,0 +1,49 @@
+
+<li>
+  <div class="collapse border-base-300 border">
+    <input type="checkbox" />
+    <div class="collapse-title font-semibold">
+      <div class="grid grid-cols-12 gap-2 mb-2">
+        <div class="col-span-1 font-bold">{{r.position}}</div>
+        <div class="col-span-1 font-bold">Эфир</div>
+        <div class="col-span-8 font-bold">{{r.news.title}}</div>
+        <div class="col-span-1 font-bold">{{r.news.status}}</div>
+        <div class="col-span-1 font-bold justify-self-end">{{r.news.asset.duration}}</div>
+      </div>
+    </div>
+    <div class="collapse-content text-sm grid grid-cols-12 gap-2">
+      <div class="flex flex-col col-span-10">
+        {% if r.news.asset.title %}
+        <div class="flex items-center">
+          <div class="mb-2 p-3 badge badge-primary">
+            <span class="mr-2">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-film" viewBox="0 0 16 16">
+                <path d="M0 1a1 1 0 0 1 1-1h14a1 1 0 0 1 1 1v14a1 1 0 0 1-1 1H1a1 1 0 0 1-1-1zm4 0v6h8V1zm8 8H4v6h8zM1 1v2h2V1zm2 3H1v2h2zM1 7v2h2V7zm2 3H1v2h2zm-2 3v2h2v-2zM15 1h-2v2h2zm-2 3v2h2V4zm2 3h-2v2h2zm-2 3v2h2v-2zm2 3h-2v2h2z"/>
+              </svg>
+            </span>
+            <span>{{r.news.asset.title}}</span>
+          </div>      
+        </div>
+        {% endif %}
+        <span>{{r.news.content}}</span>
+      </div>
+       <div class="col-span-1 font-bold">
+          <select class="select">
+            <option disabled selected></option>
+            <option>Crimson</option>
+            <option>Amber</option>
+            <option>Velvet</option>
+          </select>
+        </div>
+      <div class="col-span-1 font-bold justify-self-end">
+        <a type="button" href="" class="btn btn-sm btn-circle btn-error">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash" viewBox="0 0 16 16">
+            <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5m2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5m3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0z"/>
+            <path d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4zM2.5 3h11V2h-11z"/>
+          </svg>
+        </a>
+      </div>
+    </div>
+  </div>  
+</li>  
+

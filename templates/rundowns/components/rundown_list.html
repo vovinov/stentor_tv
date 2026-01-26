@@ -1,0 +1,20 @@
+{% load rundown_tags %}
+
+<h2 class="text-3xl text-center mb-10">Выберите час</h2>
+
+
+<ul class="grid grid-cols-12 gap-1">
+  {% for r in rundowns %}
+  <li>
+    <a href="{% url "rundowns:get_rundown_detail" r.id %}" class="btn btn-outline btn-info col-span-3">
+      {{r.air_hour}}
+    </a>
+  </li>
+  {% endfor %}
+</ul>
+
+
+  
+
+  
+

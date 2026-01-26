@@ -41,7 +41,7 @@ class RundownNews(models.Model):
         ]
 
     def __str__(self):
-        return f"RundownNews --- {self.rundown} {self.news}"
+        return f"RundownNews --- {self.rundown} || Новость: {self.news}"
 
 
 class Category(models.Model):

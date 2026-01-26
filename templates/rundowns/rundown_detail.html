@@ -1,24 +1,33 @@
 {% extends "base.html" %}
 {% load rundown_tags %}
-
 {% block content %}
 
+<button class="btn btn-success" onclick="">Добавить новость</button>
 
-    <h2 class="my-3 text-center">
-        Выпуск от {{rundown.air_day }}.{% if rundown.air_month < 10 %}0{% endif %}{{rundown.air_month}} на 
-        {{rundown.air_hour}} часов
-    </h2>
+<h2 class="mb-5 text-center text-3xl font-bold">
+    Выпуск от {{rundown.air_day}}.{% if rundown.air_month < 10 %}0{% endif %}{{rundown.air_month}} на 
+    {{rundown.air_hour}} часов
+</h2>
 
-    <div class="accordion" id="accordionRundownAir">
-       
-        {% for r in rundown.rundown.all %}
 
-            {% include "rundowns/rundown_item.html" %}
-        
-        {% endfor %}
-    </div>
-    <div class="container fixed-bottom">
-        <div class="">ТОТАЛ: {{rundown.duration}}</div>
-    </div>
+<div class="grid grid-cols-12 gap-2 mb-2">
+    <div class="col-span-1 font-bold">Позиция</div>
+    <div class="col-span-1 font-bold">Эфир</div>
+    <div class="col-span-8 font-bold">Новость</div>
+    <div class="col-span-1 font-bold">Статус</div>
+    <div class="col-span-1 font-bold">Время</div>
+</div>
+<div>
 
-{% endblock %}
+    <ul class="list bg-base-100 rounded-box shadow-md">
+    {% for r in rundown.rundown.all %}
+
+        {% include "rundowns/components/rundown_item.html" %}
+    
+    {% endfor %}
+    </ul>
+   
+</div>
+
+{% endblock content %}
+

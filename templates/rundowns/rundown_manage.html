@@ -1,9 +1,11 @@
 {% extends "base.html" %}
 
 {% block content %}
-  
-  <button hx-get="{% url "rundowns:rundowns_create" %}" class="btn btn-success mb-2">Создать выпуск</button>
 
+  <div class="">
+    <button hx-get="{% url "rundowns:create_rundown" %}" hx-target="#main-content" class="btn btn-success mb-2">Создать выпуск</button>
+  </div>
+  
   <div class="" id="rundowns">
     <h2 class="text-3xl text-center mb-10">Выберите день</h2>
     <div class="text-center form-control w-full">
@@ -15,4 +17,4 @@
 
   </div>
 
-  {% endblock %}
+{% endblock %}

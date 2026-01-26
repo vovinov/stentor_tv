@@ -30,9 +30,8 @@ def create_news(request):
     form = NewsCreationForm(request.POST)
 
     if form.is_valid():
-        news = form.save(commit=False)
+        news = form.save()
         news.user = request.user
-        news.save()
 
         rundown = Rundown.objects.all().first()
 
@@ -56,12 +55,12 @@ def create_news(request):
 class NewsUpdateView(UpdateView):
 
     model = News
-    form_class = NewsEditForm
+    fields = ["title", "content"]
     template_name = "news/news_edit.html"
-    success_url = reverse_lazy("news:news_content")
+    success_url = reverse_lazy("news:manage_news")
 
 
-def news_delete(request, item_id):
+def delete_news_from_rundown(request, item_id):
     rundown_news = RundownNews.objects.get(id=item_id)
     rundown_news.delete()
-    return redirect("rundowns:rundown_get", rundown_id=rundown_news.rundown.id)
+    return redirect("rundowns:get_rundown_detail", rundown_id=rundown_news.rundown.id)

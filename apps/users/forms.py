@@ -5,10 +5,11 @@ from django.contrib.auth import get_user_model
 
 class UserLoginForm(AuthenticationForm):
     username = forms.CharField(
-        label="Логин", widget=forms.TextInput(attrs={"class": "form-control"})
+        label="Логин", widget=forms.TextInput(attrs={"class": "input input-bordered"})
     )
     password = forms.CharField(
-        label="Пароль", widget=forms.PasswordInput(attrs={"class": "form-control"})
+        label="Пароль",
+        widget=forms.PasswordInput(attrs={"class": "input input-bordered"}),
     )
 
     class Meta:

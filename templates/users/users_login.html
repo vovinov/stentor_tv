@@ -1,16 +1,30 @@
-<div class="my-5">
-  <form method="post" class="row justify-content-center align-items-center">
-    <div class="col-4 text-center">
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="flex justify-center w-full my-5">
+  <div class="w-50">
+    <form method="post" action="{% url "users:login" %}" class="flex flex-col items-center">
       {% csrf_token %}
+
       <div class="form-error">{{ form.non_field_errors }}</div>
-      {% for f in form %}
-      <label class="form-label" for="{{ f.id_for_label }}">{{f.label}}: </label>{{ f }}</p>
-      <div class="form-error">{{ f.errors }}</div>
+
+      {% for field in form %}
+        <div class="flex flex-col form-control mb-2">
+          <label class="label">
+            <span class="label-text mb-1">{{field.label}}</span>
+          </label>
+          {{field }}
+          {% if field.errors %}
+            <label class="label text-error">
+              {{ field.errors }}
+          </label>
+          {% endif %}
+        </div>
       {% endfor %}
-      <p><button type="submit" class="btn btn-primary">Войти</button></p>
-      
-    </div>
-    
-  </form>
+      <button type="submit" class="btn btn-primary self-start ml-2">ВОЙТИ</button>
+    </form>
+  </div>
 </div>
 
+{% endblock content %}

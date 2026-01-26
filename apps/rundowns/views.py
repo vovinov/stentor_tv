@@ -8,40 +8,47 @@ from apps.rundowns.models import Rundown, RundownNews
 
 
 @login_required
-def index_get(request):
+def get_index(request):
     return render(request, "index.html")
 
 
-def rundowns_manage(request):
+def manage_rundowns(request):
+
+    html = "rundowns/rundown_manage.html"
 
     if request.method == "POST":
         date = int(request.POST["date"].split("-")[-1])
-        form = RundownsDateForm(request.POST)
 
         rundowns = Rundown.objects.filter(air_day=date)
-        print(rundowns)
         return render(
             request,
-            "rundowns/rundown_manage.html",
-            {"form": form, "rundowns": rundowns},
+            html,
+            {"rundowns": rundowns},
         )
 
     else:
         form = RundownsDateForm()
-        return render(request, "rundowns/rundown_manage.html", {"form": form})
+        return render(request, html, {"form": form})
 
 
-def rundowns_detail(request, rundown_id):
+def get_rundown_detail(request, rundown_id):
     rundown = Rundown.objects.get(id=rundown_id)
+
+    p = 0
+    for pos, r in enumerate(rundown.rundown.all(), 1):
+        r.position = pos
+        r.save()
+
+    context = {"rundown": rundown}
 
     return render(
         request,
         "rundowns/rundown_detail.html",
-        context={"rundown": rundown},
+        context,
     )
 
 
-def rundowns_create(request):
+def create_rundown(request):
 
     current_year = timezone.localtime().year
     current_month = timezone.localtime().month
@@ -55,16 +62,20 @@ def rundowns_create(request):
         air_month=current_month,
         air_day=current_day,
         air_hour=current_hour + 1,
+        creator=request.user,
     )
+
     current_news = rundown.news.all()
 
     for n in current_news:
         RundownNews.objects.create(rundown=rundown_new, news=n)
 
+    context = {"rundown_id": rundown_new.id}
+
     if not created:
-        return redirect("rundowns:rundown_manage")
+        return redirect("rundowns:manage_rundown")
     else:
-        return redirect("rundowns:rundown_detail", rundown_id=rundown_new.id)
+        return render(request, "rundowns/rundown_detail.html", context)
 
 
 def get_rundowns_by_date(request):
@@ -73,4 +84,4 @@ def get_rundowns_by_date(request):
 
     context = {"rundowns": rundowns}
 
-    return render(request, "rundowns/rundown_list.html", context)
+    return render(request, "rundowns/components/rundown_list.html", context)
