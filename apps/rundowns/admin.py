@@ -5,5 +5,11 @@ from .models import Rundown, RundownNews, Category
 
 
 admin.site.register(Rundown)
-admin.site.register(RundownNews)
+
+
+@admin.register(RundownNews)
+class CustomRundownNewsAdmin(admin.ModelAdmin):
+    fields = ["rundown", "news", "air_time", "position"]
+
+
 admin.site.register(Category)

@@ -3,6 +3,7 @@ from django.contrib.auth import get_user_model
 
 from apps.common.models import TimedBaseModel
 from apps.assets.models import Asset
+from apps.statuses.models import Status
 
 
 class News(TimedBaseModel):
@@ -11,10 +12,16 @@ class News(TimedBaseModel):
     asset = models.OneToOneField(
         Asset, on_delete=models.SET_NULL, null=True, blank=True, related_name="news"
     )
-    creator = models.ForeignKey(get_user_model(), on_delete=models.SET_NULL, null=True)
+    status = models.ForeignKey(Status, on_delete=models.SET_NULL, null=True)
+    created_by = models.ForeignKey(
+        get_user_model(), on_delete=models.DO_NOTHING, related_name="news_creator"
+    )
+    updated_by = models.ForeignKey(
+        get_user_model(), on_delete=models.DO_NOTHING, related_name="news_updater"
+    )
 
     class Meta:
-        verbose_name_plural = "News"
+        verbose_name_plural = "Новости"
 
     def __str__(self):
         return self.title

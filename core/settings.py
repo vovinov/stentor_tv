@@ -54,6 +54,7 @@ USER_APPS = [
     "apps.rundowns",
     "apps.users",
     "apps.assets",
+    "apps.statuses",
 ]
 
 INSTALLED_APPS = DJANGO_APPS + THIRD_APPS + USER_APPS

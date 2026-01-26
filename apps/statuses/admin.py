@@ -1,3 +1,8 @@
 from django.contrib import admin
 
-# Register your models here.
+from apps.statuses.models import Status
+
+
+@admin.register(Status)
+class CustomStatusAdmin(admin.ModelAdmin):
+    pass

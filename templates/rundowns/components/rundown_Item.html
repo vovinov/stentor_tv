@@ -5,9 +5,11 @@
     <div class="collapse-title font-semibold">
       <div class="grid grid-cols-12 gap-2 mb-2">
         <div class="col-span-1 font-bold">{{r.position}}</div>
-        <div class="col-span-1 font-bold">Эфир</div>
+        <div class="col-span-1 font-bold">{{r.air_time|time:"H:i:s"}}</div>
         <div class="col-span-8 font-bold">{{r.news.title}}</div>
-        <div class="col-span-1 font-bold">{{r.news.status}}</div>
+        <div class="col-span-1 font-bold">
+          <span class="badge bg-yellow-300">{{r.news.status}}</span>
+        </div>
         <div class="col-span-1 font-bold justify-self-end">{{r.news.asset.duration}}</div>
       </div>
     </div>

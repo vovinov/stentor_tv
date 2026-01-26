@@ -1,8 +1,8 @@
 from django.utils import timezone
+from datetime import time
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import redirect, render
 
-from apps.news.models import News
 from apps.rundowns.forms import RundownsDateForm
 from apps.rundowns.models import Rundown, RundownNews
 
@@ -34,8 +34,12 @@ def manage_rundowns(request):
 def get_rundown_detail(request, rundown_id):
     rundown = Rundown.objects.get(id=rundown_id)
 
-    p = 0
     for pos, r in enumerate(rundown.rundown.all(), 1):
+
+        if pos == 1:
+            new_time = time(r.rundown.air_hour, 0, 0)
+            r.air_time = new_time
+
         r.position = pos
         r.save()
 

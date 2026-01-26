@@ -1,19 +1,24 @@
-from django.contrib.auth import get_user_model
 from django.db import models
+from apps.common.models import TimedBaseModel
 from apps.news.models import News
 
+from django.utils import timezone
 
-class Rundown(models.Model):
+from django.contrib.auth import get_user_model
+
+
+class Rundown(TimedBaseModel):
     air_hour = models.IntegerField(default=0)
     air_day = models.IntegerField(default=0)
     air_month = models.IntegerField(default=0)
     air_year = models.IntegerField(default=0)
     duration = models.DurationField(blank=True, null=True)
-    created = models.DateTimeField(auto_now_add=True, null=True)
-    updated = models.DateTimeField(auto_now=True)
     news = models.ManyToManyField(News, through="RundownNews")
-    creator = models.ForeignKey(
-        get_user_model(), on_delete=models.SET_NULL, null=True, related_name="rundown"
+    created_by = models.ForeignKey(
+        get_user_model(), on_delete=models.DO_NOTHING, related_name="rundown_creator"
+    )
+    updated_by = models.ForeignKey(
+        get_user_model(), on_delete=models.DO_NOTHING, related_name="rundown_updater"
     )
 
     class Meta:
@@ -30,6 +35,7 @@ class RundownNews(models.Model):
     news = models.ForeignKey(
         News, on_delete=models.CASCADE, related_name="rundown_news"
     )
+    air_time = models.TimeField(default=timezone.localtime())
     position = models.PositiveIntegerField(default=1000)
 
     class Meta:

@@ -4,6 +4,7 @@ from django.views.generic.edit import UpdateView
 from django.db.models import Q
 
 from apps.rundowns.models import Rundown, RundownNews
+from apps.statuses.models import Status
 
 from .models import News
 from .forms import NewsCreationForm, NewsEditForm
@@ -30,8 +31,14 @@ def create_news(request):
     form = NewsCreationForm(request.POST)
 
     if form.is_valid():
-        news = form.save()
-        news.user = request.user
+        news = form.save(commit=False)
+
+        news.created_by = request.user
+        news.updated_by = request.user
+
+        status = Status.objects.get(id=1)
+        news.status = status
+        news.save()
 
         rundown = Rundown.objects.all().first()
 

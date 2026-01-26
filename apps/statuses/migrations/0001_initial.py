@@ -12,11 +12,14 @@ class Migration(migrations.Migration):
 
     operations = [
         migrations.CreateModel(
-            name='Asset',
+            name='Status',
             fields=[
                 ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('title', models.CharField(max_length=200, unique=True)),
-                ('duration', models.DurationField(blank=True)),
+                ('title', models.CharField(max_length=150, verbose_name='Статус')),
+                ('color', models.CharField(max_length=10)),
             ],
+            options={
+                'verbose_name_plural': 'Статусы',
+            },
         ),
     ]
