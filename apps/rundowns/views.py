@@ -66,10 +66,18 @@ def get_rundown_detail(request, rundown_id):
 
 
 def create_rundown(request):
+
+    current_hour = timezone.localtime().hour
+
+    next_hour = 0 if current_hour == 23 else current_hour + 1
+
+    if next_hour != 0:
+        current_day = timezone.localtime().day
+    else:
+        current_day = timezone.localtime().day + 1
+
     current_year = timezone.localtime().year
     current_month = timezone.localtime().month
-    current_day = timezone.localtime().day
-    current_hour = timezone.localtime().hour
 
     rundown = Rundown.objects.all().first()
 
@@ -77,24 +85,17 @@ def create_rundown(request):
         air_year=current_year,
         air_month=current_month,
         air_day=current_day,
-        air_hour=current_hour + 1,
+        air_hour=next_hour,
         created_by=request.user,
         updated_by=request.user,
     )
 
     current_news = rundown.news.all()
 
-    for n in current_news:
-        RundownNews.objects.create(
-            rundown=rundown_new, news=n, position=rundown.rundown.position
-        )
+    for pos, n in enumerate(current_news, 1):
+        RundownNews.objects.create(rundown=rundown_new, news=n, position=pos)
 
-    context = {"rundown": rundown_new}
-
-    if not created:
-        return redirect("rundowns:manage_rundowns")
-    else:
-        return redirect("rundowns:get_rundown_detail", context)
+    return redirect("rundowns:manage_rundowns")
 
 
 def get_rundowns_by_date(request):

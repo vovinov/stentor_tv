@@ -37,7 +37,7 @@ class RundownNews(models.Model):
     )
     start_time = models.TimeField(default=timezone.localtime())
     end_time = models.TimeField(default=timezone.localtime())
-    position = models.PositiveIntegerField(default=1000)
+    position = models.PositiveIntegerField(default=1)
 
     class Meta:
         ordering = ["position"]
