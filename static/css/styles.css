@@ -1,0 +1,36 @@
+.notification {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  padding: 16px 24px;
+  text-align: center;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+  border-radius: 0 0 12px 12px;
+  transform: translateY(-100%);
+  opacity: 0;
+  pointer-events: none;
+  z-index: 1000;
+  
+  /* Анимация: 1s въезд + 3s пауза + 1s выезд = 5s всего */
+  animation: slideDownUp 5s ease-out forwards;
+}
+
+@keyframes slideDownUp {
+  0% {
+    transform: translateY(-100%);
+    opacity: 0;
+  }
+  10% {
+    transform: translateY(0);
+    opacity: 1;
+  }
+  90% {
+    transform: translateY(0);
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(-100%);
+    opacity: 0;
+  }
+}

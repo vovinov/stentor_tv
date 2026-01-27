@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect
 from django.urls import reverse_lazy
 from django.views.generic.edit import UpdateView
 from django.db.models import Q
+from django.contrib import messages
 
 from apps.rundowns.models import Rundown, RundownNews
 from apps.statuses.models import Status
@@ -40,7 +41,10 @@ def create_news(request):
         news.status = status
         news.save()
 
-        rundown = Rundown.objects.all().first()
+        try:
+            rundown = Rundown.objects.all().first()
+        except:
+            messages.error(request, "Ошибка! Нет ни одного плейлиста!")
 
         last_pos = (
             RundownNews.objects.filter(rundown=rundown)
@@ -54,9 +58,14 @@ def create_news(request):
             rundown=rundown, news=news, defaults={"position": last_pos + 1}
         )
 
-        context = {"n": news}
+    context = {"n": news}
 
-    return render(request, "news/components/news_item.html", context)
+    response = render(request, "news/components/news_item.html", context)
+    response["HX-Trigger"] = "success"
+
+    messages.success(request, "Новость успешно добавлена!")
+
+    return response
 
 
 def show_news_to_add_rundown(request, rundown_id):

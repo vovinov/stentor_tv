@@ -3,7 +3,7 @@
   <div class="modal-box">
     <h3 class="text-lg font-bold mb-2">Создание новости</h3>
     
-    <form hx-post="{% url "news:create_news" %}" hx-target="#news_list" hx-swap="afterbegin">
+    <form hx-post="{% url "news:create_news" %}" hx-on:success="news_create_modal.close(); this.reset();" hx-target="#news_list" hx-swap="afterbegin">
       {% csrf_token %}
 
       <div class="form-control w-full mb-3">

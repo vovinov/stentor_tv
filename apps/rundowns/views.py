@@ -3,7 +3,7 @@ from datetime import time, timedelta
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import redirect, render
 from django.db.models import Q
-from django.contrib.auth import get_user_model
+from django.contrib import messages
 
 from apps.rundowns.forms import RundownsDateForm
 from apps.rundowns.models import Rundown, RundownNews
@@ -40,7 +40,7 @@ def get_rundown_detail(request, rundown_id):
     start_hour = time(rundown.air_hour, 0, 0)
     temp = "A"
 
-    for pos, r in enumerate(rundown.rundown.all(), 1):
+    for pos, r in enumerate(rundown.rundown.all(), 1):  # type: ignore
 
         if pos == 1:
             r.start_time = start_hour
@@ -90,12 +90,17 @@ def create_rundown(request):
         updated_by=request.user,
     )
 
-    current_news = rundown.news.all()
+    current_news = rundown.news.all()  # type: ignore
 
     for pos, n in enumerate(current_news, 1):
         RundownNews.objects.create(rundown=rundown_new, news=n, position=pos)
 
-    return redirect("rundowns:manage_rundowns")
+    if created:
+        messages.success(request, "Выпуск на следующий час успешно создан!")
+    else:
+        messages.error(request, "Выпуск не создан! Такой уже существует!")
+
+    return render(request, "rundowns/rundown_manage.html")
 
 
 def get_rundowns_by_date(request):

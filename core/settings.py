@@ -150,6 +150,8 @@ STATIC_URL = "/static/"
 STATICFILES_DIRS = [BASE_DIR / "static"]
 STATIC_ROOT = BASE_DIR / "staticfiles"
 
+AUTH_USER_MODEL = "users.User"
+
 LOGIN_URL = "users:login"
 LOGOUT_REDIRECT_URL = "users:login"
 LOGIN_REDIRECT_URL = "index"

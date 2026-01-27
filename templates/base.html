@@ -7,10 +7,36 @@
     <title>STENTOR TV</title>
 
     <link href="https://cdn.jsdelivr.net/npm/daisyui@5" rel="stylesheet" type="text/css" />
+    <link rel="stylesheet" href="{% static "css/styles.css" %}">
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
   </head>
 
   <body>
+
+    {% comment %} {% if messages %}
+    <div class="toast toast-top toast-center">
+      {% for message in messages %}
+    
+      <div class="alert alert-{{ message.tags }}">
+        <span>{{ message }}</span>
+      </div>
+        
+      {% endfor %}
+    </div>
+    {% endif %} {% endcomment %}
+
+    {% if messages %}
+    {% for message in messages %}
+  
+      <div role="alert" class="notification font-bold text-xl alert alert-{{ message.tags }}">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="h-6 w-6 shrink-0 stroke-current">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+        </svg>
+        <span>{{ message }}</span>
+      </div>
+     
+    {% endfor %}
+    {% endif %}
 
     <div class="drawer lg:drawer-open">
       
@@ -20,13 +46,10 @@
 
         <!-- Навигация -->
         <nav class="navbar w-full bg-base-300">
-          <label for="my-drawer-4" aria-label="open sidebar" class="btn btn-square btn-ghost">
-            <!-- Sidebar toggle icon -->
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" stroke-linejoin="round" stroke-linecap="round" stroke-width="2" fill="none" stroke="currentColor" class="my-1.5 inline-block size-4"><path d="M4 4m0 2a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v12a2 2 0 0 1 -2 2h-12a2 2 0 0 1 -2 -2z"></path><path d="M9 4v16"></path><path d="M14 10l2 2l-2 2"></path></svg>
-          </label>
-          <div class="flex justify-between w-full">
+          <div class="flex justify-between items-center w-full">
             <a class="text-2xl mb-2 font-bold" href="{% url "index" %}">STENTOR</a>
             {% if user.is_authenticated %}
+            <span class="font-bold text-xl">{{ user }}</span>
             <a class="btn" type="button" href="{% url "users:logout"%}">Выйти</a>
             {% endif %}
           </div>
