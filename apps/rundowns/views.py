@@ -5,6 +5,8 @@ from django.shortcuts import redirect, render
 from django.db.models import Q
 from django.contrib import messages
 
+from utils import get_times
+
 from apps.rundowns.forms import RundownsDateForm
 from apps.rundowns.models import Rundown, RundownNews
 from utils import add_time, get_times
@@ -41,9 +43,7 @@ def manage_rundowns(request):
 def get_rundown_detail(request, rundown_id):
     rundown = Rundown.objects.get(id=rundown_id)
 
-    rundown_items = get_times(rundown)
-
-    context = {"rundown": rundown, "rundown_items": rundown_items}
+    context = {"rundown": rundown, "rundown_items": get_times(rundown)}
 
     return render(
         request,
@@ -88,7 +88,9 @@ def create_rundown(request):
 
     messages.success(request, "Выпуск на следующий час успешно создан!")
 
-    return render(request, "rundowns/rundown_manage.html")
+    context = {"rundown": rundown_new, "rundowns_items": get_times(rundown_new)}
+
+    return render(request, "rundowns/rundown_detail.html", context)
 
 
 def get_rundowns_by_date(request):

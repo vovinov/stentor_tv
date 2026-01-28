@@ -31,3 +31,25 @@ class NewsEditForm(forms.ModelForm):
     class Meta:
         model = News
         fields = ["title", "content"]
+
+
+class NewsStatusChangeForm(forms.Form):
+
+    CHOICES = [
+        ("Текст", "Текст"),
+        ("Монтаж", "Монтаж"),
+        ("Эфир", "Эфир"),
+        ("Правка", "Правка"),
+    ]
+
+    status = forms.ChoiceField(
+        label="Статус",
+        choices=CHOICES,
+        widget=forms.Select(attrs={"class": "input input-bordered w-full"}),
+    )
+    comment = forms.CharField(
+        label="Комментарий",
+        widget=forms.Textarea(
+            attrs={"class": "input input-bordered w-full", "cols": "2", "rows": "20"}
+        ),
+    )

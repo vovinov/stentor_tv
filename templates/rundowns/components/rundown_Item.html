@@ -1,7 +1,7 @@
 
 {% load rundown_tags %}
 
-<li class="flex items-center">
+<li class="flex items-center" id="rundown_item">
 
   <!-- Кнопка вниз -->
   <div class="mr-3">
@@ -35,12 +35,12 @@
     </summary>
 
     <!-- Контент -->
-    <div class="collapse-content text-sm text-sm grid grid-cols-12 gap-2 items-center">
+    <div class="collapse-content text-sm text-sm grid grid-cols-12 gap-2">
       
-      <div class="flex flex-col col-span-9">
+      <div class="px-2 flex flex-col col-span-9 border-r-2 border-base-300">
         {% if r.item.news.asset.title %}
         <div class="mb-2 flex items-center">
-          <button hx-get="{% url "news:view_assets_to_add_news" r.item.news.id %}" hx-target="#main_content" type="button" class="btn btn-info mr-2">
+          <button hx-get="{% url "news:show_assets_to_add_news" r.item.news.id %}" hx-target="#main_content" type="button" class="btn btn-info btn-outline mr-2">
             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-repeat" viewBox="0 0 16 16">
               <path d="M11.534 7h3.932a.25.25 0 0 1 .192.41l-1.966 2.36a.25.25 0 0 1-.384 0l-1.966-2.36a.25.25 0 0 1 .192-.41m-11 2h3.932a.25.25 0 0 0 .192-.41L2.692 6.23a.25.25 0 0 0-.384 0L.342 8.59A.25.25 0 0 0 .534 9"/>
               <path fill-rule="evenodd" d="M8 3c-1.552 0-2.94.707-3.857 1.818a.5.5 0 1 1-.771-.636A6.002 6.002 0 0 1 13.917 7H12.9A5 5 0 0 0 8 3M3.1 9a5.002 5.002 0 0 0 8.757 2.182.5.5 0 1 1 .771.636A6.002 6.002 0 0 1 2.083 9z"/>
@@ -59,14 +59,26 @@
           </div>      
         </div>
         {% endif %}
-        <span>{{r.item.news.content}}</span>
+        <span class="py-2 border-t-2 border-base-300">{{r.item.news.content}}</span>
+        <div class="py-2 border-t-2 border-base-300">
+          {% if r.item.news.comment.all %}
+          {% for c in r.item.news.comment.all %}
+          <div class="flex items-center justify-between">
+            <span class="badge badge-outline text-error">{{c}}</span>
+            <span>{{c.updated_at|date:"d/m/y H:m"}}</span>
+          </div>
+          {% endfor %}
+          {% else %}
+          <span class="badge badge-neutral badge-outline">Нет комментариев</span>
+          {% endif %}
+        </div>
       </div>
 
-      <div class="col-span-3 flex flex-col">
+      <div class="col-span-3 flex flex-col justify-between">
         <div class="flex justify-between mb-2">
           <div class="font-bold">
-            <select class="select">
-              <option disabled selected>Статус</option>
+            <select hx-get="{% url "news:change_news_status" r.item.news.id %}" hx-target="#main_content" name="news_status" class="select">
+              <option selected disabled>Статус</option>
               <option value="Правка" class="bg-warning">Правка</option>
               <option value="Текст" class="bg-success">Текст</option>
               <option value="Создано" class="bg-info">Создано</option>
@@ -88,14 +100,15 @@
             </a>
           </div>
         </div>
-        <div class="items-end-self">
-          <p>{{r.news.updated_by}}</p>
-          <p>{{r.news.updated_at}}</p>
+        <div class="">
+          <p class="font-bold text-lg">{{r.item.news.updated_by}}</p>
+          <p>{{r.item.news.updated_at}}</p>
         </div>
       </div>
-
     </div>
   </details>
+
+  
 
    <!-- Кнопка вверх -->
   <div class="ml-3">

@@ -4,17 +4,15 @@
 
 <a type="button" 
 href="{% url "news:show_news_to_add_rundown" rundown.id %}" 
-class="btn btn-success">Добавить новость</a>
+class="btn btn-success">Добавить новость в выпуск</a>
 
 <h2 class="mb-5 text-center text-3xl font-bold">
     Выпуск от {{rundown.air_day}}.{% if rundown.air_month < 10 %}0{% endif %}{{rundown.air_month}} на 
     {{rundown.air_hour}} часов
 </h2>
 
+{% include "rundowns/components/rundown_ul.html" %}
 
-<div class="" id="rundowns_news_list">
-    {% include "rundowns/components/rundown_ul.html" %}
-</div>
 
 {% endblock content %}
 

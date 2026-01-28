@@ -5,11 +5,13 @@ from django.db.models import Q
 from django.contrib import messages
 
 from apps.assets.models import Asset
+from apps.comments.models import Comment
 from apps.rundowns.models import Rundown, RundownNews
 from apps.statuses.models import Status
+from utils import get_times
 
 from .models import News
-from .forms import NewsCreationForm, NewsEditForm
+from .forms import NewsCreationForm, NewsEditForm, NewsStatusChangeForm
 
 
 def manage_news(request):
@@ -110,7 +112,7 @@ def delete_news_from_rundown(request, item_id):
     return redirect("rundowns:get_rundown_detail", rundown_id=rundown_news.rundown.id)
 
 
-def view_assets_to_add_news(request, news_id):
+def show_assets_to_add_news(request, news_id):
     news = News.objects.get(id=news_id)
     assets = Asset.objects.exclude(id=news.asset.id)
 
@@ -128,4 +130,42 @@ def change_asset_news(request, news_id, asset_id):
 
     messages.success(request, "Материал успешно изменён")
 
+    return render(request, "index.html")
+
+
+def change_news_status(request, news_id):
+
+    initial_data = {
+        "status": request.GET["news_status"],
+        "comment": None,
+    }
+
+    form = NewsStatusChangeForm(initial=initial_data)
+
+    context = {"news_id": news_id, "form": form}
+
+    return render(request, "rundowns/components/rundown_change_status.html", context)
+
+
+def add_comment_to_news(request):
+    news = News.objects.get(id=int(request.POST["news_id"]))
+
+    comment, created = Comment.objects.get_or_create(
+        text=request.POST["comment"],
+        news=news,
+        author=request.user,
+        updated_by=request.user,
+    )
+
+    if created:
+        new_status = Status.objects.get(title=request.POST["status"])
+
+        news.status = new_status
+        news.comment.add(comment)
+        news.save()
+    else:
+        messages.error(request, "Ошибка!")
+        return redirect("index")
+
+    messages.success(request, "Комментарий добавлен!")
     return render(request, "index.html")
