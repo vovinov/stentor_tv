@@ -47,6 +47,7 @@ DJANGO_APPS = [
 
 THIRD_APPS = [
     "debug_toolbar",
+    "djangoql",
 ]
 
 USER_APPS = [

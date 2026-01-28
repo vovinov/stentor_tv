@@ -1,6 +1,7 @@
 from django.urls import path, include
 
 from .views import (
+    change_asset_news,
     manage_news,
     search_news,
     create_news,
@@ -8,6 +9,7 @@ from .views import (
     add_news_to_rundown,
     NewsUpdateView,
     delete_news_from_rundown,
+    view_assets_to_add_news,
 )
 
 app_name = "news"
@@ -16,6 +18,14 @@ urlpatterns = [
     path("manage/", manage_news, name="manage_news"),
     path("manage/search", search_news, name="search_news"),
     path("create/", create_news, name="create_news"),
+    path(
+        "<int:news_id>/assets/", view_assets_to_add_news, name="view_assets_to_add_news"
+    ),
+    path(
+        "<int:news_id>/assets/<int:asset_id>",
+        change_asset_news,
+        name="change_asset_news",
+    ),
     path(
         "show/<int:rundown_id>/",
         show_news_to_add_rundown,
@@ -27,5 +37,9 @@ urlpatterns = [
         name="add_news_to_rundown",
     ),
     path("<int:pk>/edit/", NewsUpdateView.as_view(), name="edit_news"),
-    path("<int:item_id>/delete/", delete_news_from_rundown, name="delete_news"),
+    path(
+        "<int:item_id>/delete/",
+        delete_news_from_rundown,
+        name="delete_news_from_rundown",
+    ),
 ]

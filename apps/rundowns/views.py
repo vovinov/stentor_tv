@@ -12,7 +12,11 @@ from utils import add_time
 
 @login_required
 def get_index(request):
-    return render(request, "index.html")
+    today = timezone.now()
+    rundowns = Rundown.objects.filter(air_day=today.day)[:5]
+
+    context = {"rundowns": rundowns, "today": today}
+    return render(request, "index.html", context)
 
 
 def manage_rundowns(request):
@@ -40,7 +44,7 @@ def get_rundown_detail(request, rundown_id):
     start_hour = time(rundown.air_hour, 0, 0)
     temp = "A"
 
-    for pos, r in enumerate(rundown.rundown.all(), 1):  # type: ignore
+    for pos, r in enumerate(rundown.rundown_news.all(), 1):  # type: ignore
 
         if pos == 1:
             r.start_time = start_hour
@@ -90,15 +94,16 @@ def create_rundown(request):
         updated_by=request.user,
     )
 
+    if not created:
+        messages.error(request, "Выпуск не создан!")
+        return render(request, "rundowns/rundown_manage.html")
+
     current_news = rundown.news.all()  # type: ignore
 
     for pos, n in enumerate(current_news, 1):
         RundownNews.objects.create(rundown=rundown_new, news=n, position=pos)
 
-    if created:
-        messages.success(request, "Выпуск на следующий час успешно создан!")
-    else:
-        messages.error(request, "Выпуск не создан! Такой уже существует!")
+    messages.success(request, "Выпуск на следующий час успешно создан!")
 
     return render(request, "rundowns/rundown_manage.html")
 

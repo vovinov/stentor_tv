@@ -6,8 +6,6 @@ __pycache__
 db.sqlite3
 media
 
-# Миграции
-*/apps/*/migrations/*.*
 
 # Служебные файлы VS Code
 .vscode

@@ -48,6 +48,27 @@ wheels = [
 ]
 
 [[package]]
+name = "djangoql"
+version = "0.19.1"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "ply" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/9b/95/c4747b92a55e48abcfde05cc1309fe7223998f8fe3bb2e435bb16256738f/djangoql-0.19.1.tar.gz", hash = "sha256:bce09d52857857b22744f93241f16d5c62a1b118a7834e1c8afa14bebb964eee", size = 233831 }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/59/86/4455346b3c3cd7e5abe74a9c6abc97ceda2d597e73dd9eb77bd3bd558086/djangoql-0.19.1-py2.py3-none-any.whl", hash = "sha256:70cf53218b15557ed02baaace1387de1caffb6809cdfb3c633e4fd4e53a36111", size = 218813 },
+]
+
+[[package]]
+name = "ply"
+version = "3.11"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/e5/69/882ee5c9d017149285cab114ebeab373308ef0f874fcdac9beb90e0ac4da/ply-3.11.tar.gz", hash = "sha256:00c7c1aaa88358b9c765b6d3000c6eec0ba42abca5351b095321aef446081da3", size = 159130 }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/a3/58/35da89ee790598a0700ea49b2a66594140f44dec458c07e8e3d4979137fc/ply-3.11-py2.py3-none-any.whl", hash = "sha256:096f9b8350b65ebd2fd1346b12452efe5b9607f7482813ffca50c22722a807ce", size = 49567 },
+]
+
+[[package]]
 name = "sqlparse"
 version = "0.5.5"
 source = { registry = "https://pypi.org/simple" }
@@ -64,6 +85,7 @@ dependencies = [
     { name = "django" },
     { name = "django-debug-toolbar" },
     { name = "django-environ" },
+    { name = "djangoql" },
 ]
 
 [package.metadata]
@@ -71,6 +93,7 @@ requires-dist = [
     { name = "django", specifier = ">=6.0.1" },
     { name = "django-debug-toolbar", specifier = ">=6.1.0" },
     { name = "django-environ", specifier = ">=0.12.0" },
+    { name = "djangoql", specifier = ">=0.19.1" },
 ]
 
 [[package]]

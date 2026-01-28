@@ -13,18 +13,6 @@
 
   <body>
 
-    {% comment %} {% if messages %}
-    <div class="toast toast-top toast-center">
-      {% for message in messages %}
-    
-      <div class="alert alert-{{ message.tags }}">
-        <span>{{ message }}</span>
-      </div>
-        
-      {% endfor %}
-    </div>
-    {% endif %} {% endcomment %}
-
     {% if messages %}
     {% for message in messages %}
   
@@ -64,9 +52,9 @@
       {% if user.is_authenticated %}
       <div class="drawer-side is-drawer-close:overflow-visible">
         <label for="my-drawer-4" aria-label="close sidebar" class="drawer-overlay"></label>
-        <div class="flex min-h-full flex-col items-start bg-base-200 is-drawer-close:w-14 is-drawer-open:w-64">
+        <div class="flex min-h-full flex-col items-start bg-base-200">
           <!-- Sidebar content here -->
-          <ul class="menu w-full grow">
+          <ul class="menu w-full">
             <!-- List item -->
             <li class="mb-2">
               <a href={% url "rundowns:manage_rundowns" %} type="button" class="btn btn-primary"> 
@@ -85,6 +73,18 @@
                 <span class="is-drawer-close:hidden">Новости</span>
                </a>
             </li>
+          </ul>
+          <div class="divider divider-vertical"></div>
+          <span class="w-full text-center text-sm font-bold">{{today|date:"d / m / y"}}</span>
+          <div class="divider divider-vertical"></div>
+          <ul class="w-full flex flex-col">
+            {% for r in rundowns %}
+            <li class="w-full mb-2">
+              <a href={% url "rundowns:get_rundown_detail" r.id %} type="button" class="w-full btn btn-info">
+                <span class="text-white is-drawer-close:hidden">{{r.air_hour}}</span>
+               </a>
+            </li>
+            {% endfor %}
           </ul>
         </div>
       </div>

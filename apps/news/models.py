@@ -5,6 +5,8 @@ from apps.common.models import TimedBaseModel
 from apps.assets.models import Asset
 from apps.statuses.models import Status
 
+from djangoql.queryset import DjangoQLQuerySet
+
 
 class News(TimedBaseModel):
     title = models.CharField(max_length=200, unique=True, verbose_name="Заголовок")
@@ -19,6 +21,8 @@ class News(TimedBaseModel):
     updated_by = models.ForeignKey(
         get_user_model(), on_delete=models.DO_NOTHING, related_name="news_updater"
     )
+
+    objects = DjangoQLQuerySet.as_manager()
 
     class Meta:
         verbose_name_plural = "Новости"

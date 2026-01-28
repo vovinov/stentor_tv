@@ -1,0 +1,11 @@
+<li class="list-row grid-cols-12 gap-1 items-center">
+  <div class="col-span-8 list-col-grow text-md font-bold">{{a.title}}</div>
+  <div class="col-span-1 divider divider-horizontal"></div>
+  <div class="col-span-1 list-col-grow text-md font-bold">{{a.duration}}</div>
+  <div class="col-span-1 divider divider-horizontal"></div>
+  <a type="button" href="{% url "news:change_asset_news" news_id a.id %}" class="col-span-1 btn btn-sm btn-square btn-success">
+    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-plus" viewBox="0 0 16 16">
+      <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4"/>
+    </svg>
+  </a>   
+</li>

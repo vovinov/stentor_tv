@@ -6,6 +6,8 @@ from django.utils import timezone
 
 from django.contrib.auth import get_user_model
 
+from djangoql.queryset import DjangoQLQuerySet
+
 
 class Rundown(TimedBaseModel):
     air_hour = models.IntegerField(default=0)
@@ -21,6 +23,8 @@ class Rundown(TimedBaseModel):
         get_user_model(), on_delete=models.DO_NOTHING, related_name="rundown_updater"
     )
 
+    objects = DjangoQLQuerySet.as_manager()
+
     class Meta:
         ordering = ["-air_year", "-air_month", "-air_day", "-air_hour"]
 
@@ -30,7 +34,7 @@ class Rundown(TimedBaseModel):
 
 class RundownNews(models.Model):
     rundown = models.ForeignKey(
-        Rundown, on_delete=models.CASCADE, related_name="rundown"
+        Rundown, on_delete=models.CASCADE, related_name="rundown_news"
     )
     news = models.ForeignKey(
         News, on_delete=models.CASCADE, related_name="rundown_news"

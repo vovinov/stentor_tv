@@ -4,6 +4,7 @@ from django.views.generic.edit import UpdateView
 from django.db.models import Q
 from django.contrib import messages
 
+from apps.assets.models import Asset
 from apps.rundowns.models import Rundown, RundownNews
 from apps.statuses.models import Status
 
@@ -58,19 +59,21 @@ def create_news(request):
             rundown=rundown, news=news, defaults={"position": last_pos + 1}
         )
 
-    context = {"n": news}
+        context = {"n": news}
 
-    response = render(request, "news/components/news_item.html", context)
-    response["HX-Trigger"] = "success"
+        response = render(request, "news/components/news_item.html", context)
+        response["HX-Trigger"] = "success"
 
-    messages.success(request, "Новость успешно добавлена!")
+        messages.success(request, "Новость успешно создана!")
 
-    return response
+        return response
 
 
 def show_news_to_add_rundown(request, rundown_id):
     rundown = Rundown.objects.get(id=rundown_id)
-    news = News.objects.all().order_by("-created_at")
+    news = News.objects.exclude(rundown_news__in=rundown.rundown_news.all()).order_by(
+        "-created_at"
+    )
 
     context = {"news": news, "rundown": rundown, "add": True}
 
@@ -84,6 +87,8 @@ def add_news_to_rundown(request, rundown_id, news_id):
     RundownNews.objects.get_or_create(
         rundown=rundown, news=news, position=len(rundown.news.all()) + 1
     )
+
+    messages.success(request, "Новость успешно добавлена!")
 
     return redirect("rundowns:get_rundown_detail", rundown.id)
 
@@ -99,4 +104,28 @@ class NewsUpdateView(UpdateView):
 def delete_news_from_rundown(request, item_id):
     rundown_news = RundownNews.objects.get(id=item_id)
     rundown_news.delete()
+
+    messages.success(request, "Новость успешно удалена из выпуска!")
+
     return redirect("rundowns:get_rundown_detail", rundown_id=rundown_news.rundown.id)
+
+
+def view_assets_to_add_news(request, news_id):
+    news = News.objects.get(id=news_id)
+    assets = Asset.objects.exclude(id=news.asset.id)
+
+    context = {"assets": assets, "news_id": news_id}
+
+    return render(request, "assets/assets_change.html", context)
+
+
+def change_asset_news(request, news_id, asset_id):
+    news = News.objects.get(id=news_id)
+    asset = Asset.objects.get(id=asset_id)
+
+    news.asset = asset
+    news.save()
+
+    messages.success(request, "Материал успешно изменён")
+
+    return render(request, "index.html")
