@@ -7,7 +7,7 @@ from django.contrib import messages
 
 from apps.rundowns.forms import RundownsDateForm
 from apps.rundowns.models import Rundown, RundownNews
-from utils import add_time
+from utils import add_time, get_times
 
 
 @login_required
@@ -15,7 +15,7 @@ def get_index(request):
     today = timezone.now()
     rundowns = Rundown.objects.filter(air_day=today.day)[:5]
 
-    context = {"rundowns": rundowns, "today": today}
+    context = {"rundowns": rundowns}
     return render(request, "index.html", context)
 
 
@@ -41,26 +41,9 @@ def manage_rundowns(request):
 def get_rundown_detail(request, rundown_id):
     rundown = Rundown.objects.get(id=rundown_id)
 
-    start_hour = time(rundown.air_hour, 0, 0)
-    temp = "A"
+    rundown_items = get_times(rundown)
 
-    for pos, r in enumerate(rundown.rundown_news.all(), 1):  # type: ignore
-
-        if pos == 1:
-            r.start_time = start_hour
-        else:
-            r.start_time = temp
-
-        if r.news.asset:
-            r.end_time = add_time(r.start_time, r.news.asset.duration)
-        else:
-            r.end_time = r.start_time
-
-        temp = r.end_time
-
-        r.save()
-
-    context = {"rundown": rundown}
+    context = {"rundown": rundown, "rundown_items": rundown_items}
 
     return render(
         request,
@@ -130,8 +113,10 @@ def change_news_position_down(request, rundown_news_id):
     after_pos.save()
     rundown_news.save()
 
-    rundown = Rundown.objects.get(id=rundown_news.rundown.pk)
-    context = {"rundown": rundown}
+    rundown = Rundown.objects.get(id=rundown_news.rundown.id)
+    rundown_items = get_times(rundown)
+
+    context = {"rundown_items": rundown_items}
 
     return render(request, "rundowns/components/rundown_ul.html", context)
 
@@ -149,7 +134,9 @@ def change_news_position_up(request, rundown_news_id):
     before_pos.save()
     rundown_news.save()
 
-    rundown = Rundown.objects.get(id=rundown_news.rundown.pk)
-    context = {"rundown": rundown}
+    rundown = Rundown.objects.get(id=rundown_news.rundown.id)
+    rundown_items = get_times(rundown)
+
+    context = {"rundown_items": rundown_items}
 
     return render(request, "rundowns/components/rundown_ul.html", context)

@@ -39,8 +39,6 @@ class RundownNews(models.Model):
     news = models.ForeignKey(
         News, on_delete=models.CASCADE, related_name="rundown_news"
     )
-    start_time = models.TimeField(default=timezone.localtime())
-    end_time = models.TimeField(default=timezone.localtime())
     position = models.PositiveIntegerField(default=1)
 
     class Meta:

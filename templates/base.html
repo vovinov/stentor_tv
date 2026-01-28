@@ -75,7 +75,8 @@
             </li>
           </ul>
           <div class="divider divider-vertical"></div>
-          <span class="w-full text-center text-sm font-bold">{{today|date:"d / m / y"}}</span>
+          <span class="w-full text-center text-sm font-bold">{% now "d / m / y" %}</span>
+          <span class="w-full text-center text-sm font-bold">{% now "H:i" %}</span>
           <div class="divider divider-vertical"></div>
           <ul class="w-full flex flex-col">
             {% for r in rundowns %}

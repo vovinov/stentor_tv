@@ -1,6 +1,8 @@
 from django.utils import timezone
 from datetime import time
 
+from apps.rundowns.models import Rundown
+
 
 def round_to_hour(dt):
 
@@ -34,3 +36,26 @@ def add_time(start_time, duration):
     seconds = int(total_seconds % 60)
 
     return time(hours, minutes, seconds)
+
+
+def get_times(rundown):
+
+    start_time = time(rundown.air_hour, 0, 0)
+    end_time = time(rundown.air_hour, 0, 0)
+
+    rundown_items = []
+
+    for pos, r in enumerate(rundown.rundown_news.all(), 1):  # type: ignore
+
+        if r.news.asset:
+            end_time = add_time(start_time, r.news.asset.duration)
+        else:
+            end_time = start_time
+
+        rundown_items.append(
+            {"item": r, "time": {"start_time": start_time, "end_time": end_time}}
+        )
+
+        start_time = end_time
+
+    return rundown_items
