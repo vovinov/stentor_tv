@@ -12,11 +12,13 @@ from .views import (
     NewsUpdateView,
     delete_news_from_rundown,
     show_assets_to_add_news,
+    view_history,
 )
 
 app_name = "news"
 
 urlpatterns = [
+    path("<int:news_id>/history/", view_history, name="view_history"),
     path("manage/", manage_news, name="manage_news"),
     path("manage/search/", search_news, name="search_news"),
     path("create/", create_news, name="create_news"),
@@ -50,7 +52,7 @@ urlpatterns = [
         name="change_news_status",
     ),
     path(
-        "<comments/",
+        "comments/",
         add_comment_to_news,
         name="add_comment_to_news",
     ),

@@ -1,0 +1,18 @@
+<li class="grid grid-cols-12 gap-1 p-2 border-b-1 border-base-300">
+  <div class="font-bold col-span-2 gap-1">
+    {% if n.history_type == "+" %}
+      <span>Создано</span>
+    {% elif n.history_type == "~" %}
+      <span>Изменено</span>
+    {% endif %}
+  </div>
+  <div class="col-span-6 justify-self-center">
+    <span>{{n.history_change_reason}}</span>
+  </div>
+  <div class="col-span-2 justify-self-center">
+    <span>{{n.history_user}}</span>
+  </div> 
+  <div class="col-span-2">
+    <span>{{n.history_date}}</span>
+  </div>
+</li>

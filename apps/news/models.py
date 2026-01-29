@@ -6,6 +6,7 @@ from apps.assets.models import Asset
 from apps.statuses.models import Status
 
 from djangoql.queryset import DjangoQLQuerySet
+from simple_history.models import HistoricalRecords
 
 
 class News(TimedBaseModel):
@@ -21,6 +22,7 @@ class News(TimedBaseModel):
     updated_by = models.ForeignKey(
         get_user_model(), on_delete=models.DO_NOTHING, related_name="news_updater"
     )
+    history = HistoricalRecords()
 
     objects = DjangoQLQuerySet.as_manager()
 

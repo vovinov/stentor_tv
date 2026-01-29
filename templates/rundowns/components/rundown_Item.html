@@ -38,7 +38,6 @@
     <div class="collapse-content text-sm text-sm grid grid-cols-12 gap-2">
       
       <div class="px-2 flex flex-col col-span-9 border-r-2 border-base-300">
-        {% if r.item.news.asset.title %}
         <div class="mb-2 flex items-center">
           <button hx-get="{% url "news:show_assets_to_add_news" r.item.news.id %}" hx-target="#main_content" type="button" class="btn btn-info btn-outline mr-2">
             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-repeat" viewBox="0 0 16 16">
@@ -46,6 +45,7 @@
               <path fill-rule="evenodd" d="M8 3c-1.552 0-2.94.707-3.857 1.818a.5.5 0 1 1-.771-.636A6.002 6.002 0 0 1 13.917 7H12.9A5 5 0 0 0 8 3M3.1 9a5.002 5.002 0 0 0 8.757 2.182.5.5 0 1 1 .771.636A6.002 6.002 0 0 1 2.083 9z"/>
             </svg>
           </button>
+          {% if r.item.news.asset.title %}
           <div class="flex grow py-5 badge badge-primary">
             <span class="mr-2">
               <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-film" viewBox="0 0 16 16">
@@ -56,16 +56,23 @@
               <span>{{r.item.news.asset.title}}</span>
               <span>{{r.item.news.asset.duration}}</span>
             </div>
-          </div>      
+          </div>
+          {% else %}
+          <div class="badge badge-neutral badge-outline">Нет видео</div>
+          {% endif %}     
         </div>
-        {% endif %}
         <span class="py-2 border-t-2 border-base-300">{{r.item.news.content}}</span>
         <div class="py-2 border-t-2 border-base-300">
           {% if r.item.news.comment.all %}
           {% for c in r.item.news.comment.all %}
           <div class="flex items-center justify-between">
-            <span class="badge badge-outline text-error">{{c}}</span>
-            <span>{{c.updated_at|date:"d/m/y H:m"}}</span>
+            <div>
+              <span class="font-bold text-lg text-error">{{c}}</span>
+            </div>
+            <div>
+              <span class="mr-3 badge badge-outline">{{c.updated_by}}</span>
+              <span>{{c.updated_at|date:"d/m/y H:m"}}</span>
+            </div>
           </div>
           {% endfor %}
           {% else %}
@@ -81,7 +88,7 @@
               <option selected disabled>Статус</option>
               <option value="Правка" class="bg-warning">Правка</option>
               <option value="Текст" class="bg-success">Текст</option>
-              <option value="Создано" class="bg-info">Создано</option>
+              <option value="Монтаж" class="text-white bg-success-content">Монтаж</option>
               <option value="Эфир" class="bg-secondary">Эфир</option>
             </select>
           </div>
@@ -101,8 +108,7 @@
           </div>
         </div>
         <div class="">
-          <p class="font-bold text-lg">{{r.item.news.updated_by}}</p>
-          <p>{{r.item.news.updated_at}}</p>
+          <a href="{% url "news:view_history" r.item.news.id %}" class="btn btn-outline">История</a>
         </div>
       </div>
     </div>

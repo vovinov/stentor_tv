@@ -1,15 +1,14 @@
 from django.utils import timezone
-from datetime import time, timedelta
 from django.contrib.auth.decorators import login_required
-from django.shortcuts import redirect, render
+from django.shortcuts import render
 from django.db.models import Q
 from django.contrib import messages
 
-from utils import get_times
-
 from apps.rundowns.forms import RundownsDateForm
 from apps.rundowns.models import Rundown, RundownNews
-from utils import add_time, get_times
+
+from simple_history.utils import update_change_reason
+from utils import get_times
 
 
 @login_required

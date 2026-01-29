@@ -1,12 +1,14 @@
 from django.db import models
-
 from django.contrib.auth.models import AbstractUser
+
+from simple_history.models import HistoricalRecords
 
 
 class User(AbstractUser):
     position = models.ForeignKey(
         "Position", on_delete=models.SET_NULL, blank=True, null=True
     )
+    history = HistoricalRecords()
 
 
 class Position(models.Model):

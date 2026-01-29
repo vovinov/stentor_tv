@@ -8,10 +8,19 @@ from apps.assets.models import Asset
 from apps.comments.models import Comment
 from apps.rundowns.models import Rundown, RundownNews
 from apps.statuses.models import Status
-from utils import get_times
 
 from .models import News
-from .forms import NewsCreationForm, NewsEditForm, NewsStatusChangeForm
+from .forms import NewsCreationForm, NewsStatusChangeForm
+
+from simple_history.utils import update_change_reason
+
+
+def view_history(request, news_id):
+    news = News.objects.get(id=news_id)
+
+    context = {"news": news}
+
+    return render(request, "news/history.html", context)
 
 
 def manage_news(request):
@@ -114,7 +123,10 @@ def delete_news_from_rundown(request, item_id):
 
 def show_assets_to_add_news(request, news_id):
     news = News.objects.get(id=news_id)
-    assets = Asset.objects.exclude(id=news.asset.id)
+    if news.asset:
+        assets = Asset.objects.exclude(id=news.asset.id)
+    else:
+        assets = Asset.objects.all()
 
     context = {"assets": assets, "news_id": news_id}
 
@@ -127,6 +139,7 @@ def change_asset_news(request, news_id, asset_id):
 
     news.asset = asset
     news.save()
+    update_change_reason(news, f"Изменён материал на {asset.title}")
 
     messages.success(request, "Материал успешно изменён")
 
@@ -163,6 +176,8 @@ def add_comment_to_news(request):
         news.status = new_status
         news.comment.add(comment)
         news.save()
+
+        update_change_reason(news, f"Изменён статус на {news.status.title}")
     else:
         messages.error(request, "Ошибка!")
         return redirect("index")
