@@ -10,7 +10,7 @@ from apps.rundowns.models import Rundown, RundownNews
 from apps.statuses.models import Status
 
 from .models import News
-from .forms import NewsCreationForm, NewsStatusChangeForm
+from .forms import NewsCreationForm, NewsEditForm, NewsStatusChangeForm
 
 from simple_history.utils import update_change_reason
 
@@ -24,7 +24,7 @@ def view_history(request, news_id):
 
 
 def manage_news(request):
-    news = News.objects.all()
+    news = News.objects.all().order_by("-created_at")
 
     context = {"news": news, "form": NewsCreationForm(), "add": False}
 
@@ -33,9 +33,9 @@ def manage_news(request):
 
 def search_news(request):
     search = request.GET.get("search", "")
-    news = News.objects.filter(Q(title__icontains=search))
+    news = News.objects.filter(title__icontains=search).order_by("-created_at")
 
-    context = {"news": news, "form": NewsCreationForm()}
+    context = {"news": news, "form": NewsCreationForm}
 
     return render(request, "news/components/news_list.html", context)
 
@@ -107,7 +107,8 @@ def add_news_to_rundown(request, rundown_id, news_id):
 class NewsUpdateView(UpdateView):
 
     model = News
-    fields = ["title", "content"]
+    form_class = NewsEditForm
+    # fields = ["title", "content"]
     template_name = "news/news_edit.html"
     success_url = reverse_lazy("news:manage_news")
 

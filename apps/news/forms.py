@@ -27,12 +27,10 @@ class NewsCreationForm(forms.ModelForm):
 
 class NewsEditForm(forms.ModelForm):
     title = forms.CharField(
-        widget=forms.TextInput(attrs={"class": "input input-bordered w-full"})
+        label="Название", widget=forms.TextInput(attrs={"class": "p-2 input w-full"})
     )
     content = forms.CharField(
-        widget=forms.Textarea(
-            attrs={"class": "input input-bordered w-full", "row": "20"}
-        )
+        label="Текст новости", widget=forms.Textarea(attrs={"class": "textarea w-full"})
     )
 
     class Meta:

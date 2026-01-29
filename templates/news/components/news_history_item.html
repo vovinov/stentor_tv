@@ -7,7 +7,7 @@
     {% endif %}
   </div>
   <div class="col-span-6 justify-self-center">
-    <span>{{n.history_change_reason}}</span>
+    <span>{{n.history_change_reason|default:""}}</span>
   </div>
   <div class="col-span-2 justify-self-center">
     <span>{{n.history_user}}</span>

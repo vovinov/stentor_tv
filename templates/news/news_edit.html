@@ -6,21 +6,21 @@
 
     <!-- Форма редактирования -->
     <div class="col-span-8">        
-        <form method="post" class="px-2">
+        <form method="post" class="">
             {% csrf_token %}
-            {{ form.nonfields_error }}
+            {{ form.non_fields_error }}
             {% for field in form %}
-                <div class="flex flex-col form-control mb-2">
-                    <label class="label">
-                        <span class="label-text mb-1">{{field.label}}</span>
+            <div class="flex flex-col mb-2">
+                <label class="label">
+                    <span class="label-text mb-1">{{field.label}}</span>
+                </label>
+                {{ field }}
+                {% if field.errors %}
+                    <label class="label text-error">
+                    {{ field.errors }}
                     </label>
-                    {{field }}
-                    {% if field.errors %}
-                        <label class="label text-error">
-                        {{ field.errors }}
-                        </label>
-                    {% endif %}
-                </div>
+                {% endif %}
+            </div>         
             {% endfor %}
             <button type="submit" class="btn btn-primary">Сохранить</button>
         </form>
