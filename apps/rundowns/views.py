@@ -1,5 +1,4 @@
 from django.utils import timezone
-from django.contrib.auth.decorators import login_required
 from django.shortcuts import render
 from django.db.models import Q
 from django.contrib import messages
@@ -9,15 +8,6 @@ from apps.rundowns.models import Rundown, RundownNews
 
 from simple_history.utils import update_change_reason
 from utils import get_times
-
-
-@login_required
-def get_index(request):
-    today = timezone.now()
-    rundowns = Rundown.objects.filter(air_day=today.day)[:5]
-
-    context = {"rundowns": rundowns}
-    return render(request, "index.html", context)
 
 
 def manage_rundowns(request):

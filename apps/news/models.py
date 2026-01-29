@@ -16,6 +16,7 @@ class News(TimedBaseModel):
         Asset, on_delete=models.SET_NULL, null=True, blank=True, related_name="news"
     )
     status = models.ForeignKey(Status, on_delete=models.SET_NULL, null=True)
+    editor = models.ForeignKey(get_user_model(), on_delete=models.SET_NULL, null=True)
     created_by = models.ForeignKey(
         get_user_model(), on_delete=models.DO_NOTHING, related_name="news_creator"
     )

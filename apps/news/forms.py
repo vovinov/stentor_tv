@@ -1,21 +1,28 @@
 from django import forms
 
 from apps.news.models import News
+from django.contrib.auth.models import Group
 
 
 class NewsCreationForm(forms.ModelForm):
     title = forms.CharField(
-        widget=forms.TextInput(attrs={"class": "input input-bordered w-full"})
+        label="Название новости",
+        widget=forms.TextInput(attrs={"class": "input input-bordered w-full"}),
     )
     content = forms.CharField(
-        widget=forms.Textarea(
-            attrs={"class": "input input-bordered w-full", "row": "20"}
-        )
+        label="Текст новости",
+        widget=forms.Textarea(attrs={"class": "textarea w-full"}),
+    )
+    editor = forms.ModelChoiceField(
+        queryset=Group.objects.get(name="editor").user_set.all(),
+        widget=forms.Select(attrs={"class": " w-full select"}),
+        empty_label="Выберите редактора",
+        label="Редактор",
     )
 
     class Meta:
         model = News
-        fields = ("title", "content")
+        fields = ("title", "content", "editor")
 
 
 class NewsEditForm(forms.ModelForm):

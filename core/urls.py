@@ -20,12 +20,13 @@ from django.urls import path, include
 
 from debug_toolbar.toolbar import debug_toolbar_urls
 
-from apps.rundowns.views import get_index
+from apps.dashboards.views import view_dashboard
 
 
 urlpatterns = [
-    path("", get_index, name="index"),
+    path("", view_dashboard, name="view_dashboard"),
     path("admin/", admin.site.urls),
+    path("dashboards/", include("apps.dashboards.urls", namespace="dashboards")),
     path("news/", include("apps.news.urls", namespace="news")),
     path("rundowns/", include("apps.rundowns.urls", namespace="rundowns")),
     path("users/", include("apps.users.urls", namespace="users")),

@@ -6,28 +6,21 @@
     <form hx-post="{% url "news:create_news" %}" hx-on:success="news_create_modal.close(); this.reset();" hx-target="#news_list" hx-swap="afterbegin">
       {% csrf_token %}
 
-      <div class="form-control w-full mb-3">
-        <label class="label">
-          <span class="label-text mb-1">Заголовок новости</span>
-        </label>
-        {{form.title }}
-        {% if form.title.errors %}
-         <label class="label text-error">
-            {{ form.title.errors }}
-        </label>
-        {% endif %}
-      </div>
-      <div class="form-control w-full">
-        <label class="label">
-          <span class="label-text mb-1">Текст новости</span>
-        </label>
-        {{form.content }}
-        {% if form.content.errors %}
-         <label class="label text-error">
-            {{ form.content.errors }}
-        </label>
-        {% endif %}
-      </div>
+      {% for field in form %}
+        {{ form_non_fields_error }}
+        <div class="flex flex-col mb-2">
+          <label class="label">
+            <span class="label-text mb-2">{{ field.label }}</span>
+          </label>
+          {{field }}
+          {% if field.errors %}
+          <label class="label text-error">
+              {{ field.errors }}
+          </label>
+          {% endif %}
+        </div>
+
+      {% endfor %}
       <div class="modal-action">
         <button type="submit" class="btn btn-primary">Создать новость</button>
         <button class="btn" onclick="news_create_modal.close()">Закрыть</button>
