@@ -1,9 +1,10 @@
-<ul class="list bg-base-100" id="rundowns_news_list">
+<ul class="list bg-base-100 mb-2" id="rundowns_news_list">
 
   {% for r in rundown_items %}
 
     {% include "rundowns/components/rundown_item.html" %}
-  
+    
   {% endfor %}
+  <div class="text-lg font-bold">Хронометраж: {{rundown.duration|default:"00:00:00"}}</div>
 
 </ul>

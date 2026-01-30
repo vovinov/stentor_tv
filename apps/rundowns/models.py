@@ -1,3 +1,4 @@
+from datetime import timedelta
 from django.db import models
 from apps.common.models import TimedBaseModel
 from apps.news.models import News
@@ -13,7 +14,7 @@ class Rundown(TimedBaseModel):
     air_day = models.IntegerField(default=0)
     air_month = models.IntegerField(default=0)
     air_year = models.IntegerField(default=0)
-    duration = models.DurationField(blank=True, null=True)
+    duration = models.DurationField(default=timedelta(0))
     news = models.ManyToManyField(News, through="RundownNews")
     created_by = models.ForeignKey(
         get_user_model(), on_delete=models.DO_NOTHING, related_name="rundown_creator"
@@ -44,12 +45,6 @@ class RundownNews(models.Model):
 
     class Meta:
         ordering = ["position"]
-        constraints = [
-            models.UniqueConstraint(
-                fields=["rundown", "news"],
-                name="uniq_rundown_news",
-            )
-        ]
 
     def __str__(self):
         return f"RundownNews --- {self.rundown} || Новость: {self.news}"

@@ -48,6 +48,7 @@ def get_times(rundown):
     for pos, r in enumerate(rundown.rundown_news.all(), 1):  # type: ignore
 
         if r.news.asset:
+            r.rundown.duration += r.news.asset.duration
             end_time = add_time(start_time, r.news.asset.duration)
         else:
             end_time = start_time

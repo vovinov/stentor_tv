@@ -99,9 +99,12 @@ def add_news_to_rundown(request, rundown_id, news_id):
     rundown = Rundown.objects.get(id=rundown_id)
     news = News.objects.get(id=news_id)
 
-    RundownNews.objects.get_or_create(
+    RundownNews.objects.create(
         rundown=rundown, news=news, position=len(rundown.news.all()) + 1
     )
+
+    if news.asset:
+        rundown.duration += news.asset.duration
 
     rundown.save()
     update_change_reason(rundown, f"Добавлена новость - {news}")
@@ -124,6 +127,8 @@ def delete_news_from_rundown(request, item_id):
     news = News.objects.get(id=rundown_news.news.id)
 
     rundown_news.delete()
+    if news.asset:
+        rundown.duration -= news.asset.duration
 
     rundown.save()
     update_change_reason(rundown, f"Удалена из выпуска новость - {news}")
