@@ -10,6 +10,14 @@ from simple_history.utils import update_change_reason
 from utils import get_times
 
 
+def view_rundown_history(request, rundown_id):
+    rundown = Rundown.objects.get(id=rundown_id)
+
+    context = {"rundown": rundown}
+
+    return render(request, "rundowns/rundown_history.html", context)
+
+
 def manage_rundowns(request):
 
     html = "rundowns/rundown_manage.html"
@@ -77,7 +85,7 @@ def create_rundown(request):
 
     messages.success(request, "Выпуск на следующий час успешно создан!")
 
-    context = {"rundown": rundown_new, "rundowns_items": get_times(rundown_new)}
+    context = {"rundown": rundown_new, "rundown_items": get_times(rundown_new)}
 
     return render(request, "rundowns/rundown_detail.html", context)
 

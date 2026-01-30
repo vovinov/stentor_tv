@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<h2 class="text-3xl text-center mb-5">История изменений</h2>
+<div>
+  
+  <ul class="list bg-base-100 rounded-box shadow-md">
+    
+    {% for r in rundown.history.all %}
+
+      {% include "rundowns/components/rundown_history_item.html"%}
+    
+    {% endfor %}
+
+  </ul>
+
+
+</div>
+{% endblock content %}

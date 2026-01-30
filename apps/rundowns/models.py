@@ -2,11 +2,10 @@ from django.db import models
 from apps.common.models import TimedBaseModel
 from apps.news.models import News
 
-from django.utils import timezone
-
 from django.contrib.auth import get_user_model
 
 from djangoql.queryset import DjangoQLQuerySet
+from simple_history.models import HistoricalRecords
 
 
 class Rundown(TimedBaseModel):
@@ -22,6 +21,7 @@ class Rundown(TimedBaseModel):
     updated_by = models.ForeignKey(
         get_user_model(), on_delete=models.DO_NOTHING, related_name="rundown_updater"
     )
+    history = HistoricalRecords()
 
     objects = DjangoQLQuerySet.as_manager()
 
@@ -40,6 +40,7 @@ class RundownNews(models.Model):
         News, on_delete=models.CASCADE, related_name="rundown_news"
     )
     position = models.PositiveIntegerField(default=1)
+    history = HistoricalRecords()
 
     class Meta:
         ordering = ["position"]

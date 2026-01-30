@@ -7,12 +7,16 @@ from apps.rundowns.views import (
     create_rundown,
     get_rundown_detail,
     manage_rundowns,
+    view_rundown_history,
 )
 
 app_name = "rundowns"
 
 urlpatterns = [
     path("rundowns/", get_rundowns_by_date, name="get_rundowns_by_date"),
+    path(
+        "<int:rundown_id>/history/", view_rundown_history, name="view_rundown_history"
+    ),
     path("manage/", manage_rundowns, name="manage_rundowns"),
     path("detail/<int:rundown_id>/", get_rundown_detail, name="get_rundown_detail"),
     path("create/", create_rundown, name="create_rundown"),

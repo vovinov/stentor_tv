@@ -2,10 +2,15 @@
 {% load rundown_tags %}
 {% block content %}
 
-<a type="button" 
-href="{% url "news:show_news_to_add_rundown" rundown.id %}" 
-class="btn btn-success">Добавить новость в выпуск</a>
+<div class="flex justify-between">
+    <a type="button" 
+    href="{% url "news:show_news_to_add_rundown" rundown.id %}" 
+    class="font-bold btn btn-success">ДОБАВИТЬ НОВОСТЬ В ВЫПУСК</a>
 
+    <a type="button" 
+    href="{% url "rundowns:view_rundown_history" rundown.id %}" 
+    class="font-bold btn btn-outline">ИСТОРИЯ</a>
+</div>
 <h2 class="mb-5 text-center text-3xl font-bold">
     Выпуск от {{rundown.air_day}}.{% if rundown.air_month < 10 %}0{% endif %}{{rundown.air_month}} на 
     {{rundown.air_hour}} часов

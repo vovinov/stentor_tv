@@ -15,12 +15,12 @@ from .forms import NewsCreationForm, NewsEditForm, NewsStatusChangeForm
 from simple_history.utils import update_change_reason
 
 
-def view_history(request, news_id):
+def view_news_history(request, news_id):
     news = News.objects.get(id=news_id)
 
     context = {"news": news}
 
-    return render(request, "news/history.html", context)
+    return render(request, "news/news_history.html", context)
 
 
 def manage_news(request):
@@ -99,6 +99,8 @@ def add_news_to_rundown(request, rundown_id, news_id):
         rundown=rundown, news=news, position=len(rundown.news.all()) + 1
     )
 
+    rundown.save()
+    update_change_reason(rundown, f"Добавлена новость - {news}")
     messages.success(request, "Новость успешно добавлена!")
 
     return redirect("rundowns:get_rundown_detail", rundown.id)
@@ -115,8 +117,13 @@ class NewsUpdateView(UpdateView):
 
 def delete_news_from_rundown(request, item_id):
     rundown_news = RundownNews.objects.get(id=item_id)
+    rundown = Rundown.objects.get(id=rundown_news.rundown.id)
+    news = News.objects.get(id=rundown_news.news.id)
+
     rundown_news.delete()
 
+    rundown.save()
+    update_change_reason(rundown, f"Удалена из выпуска новость - {news}")
     messages.success(request, "Новость успешно удалена из выпуска!")
 
     return redirect("rundowns:get_rundown_detail", rundown_id=rundown_news.rundown.id)
