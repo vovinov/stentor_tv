@@ -6,7 +6,6 @@ from django.contrib import messages
 from apps.rundowns.forms import RundownsDateForm
 from apps.rundowns.models import Rundown, RundownNews
 
-from simple_history.utils import update_change_reason
 from utils import get_times
 
 
@@ -113,9 +112,8 @@ def change_news_position_down(request, rundown_news_id):
     rundown_news.save()
 
     rundown = Rundown.objects.get(id=rundown_news.rundown.id)
-    rundown_items = get_times(rundown)
 
-    context = {"rundown_items": rundown_items}
+    context = {"rundown": rundown, "rundown_items": get_times(rundown)}
 
     return render(request, "rundowns/components/rundown_ul.html", context)
 
@@ -134,8 +132,7 @@ def change_news_position_up(request, rundown_news_id):
     rundown_news.save()
 
     rundown = Rundown.objects.get(id=rundown_news.rundown.id)
-    rundown_items = get_times(rundown)
 
-    context = {"rundown_items": rundown_items}
+    context = {"rundown": rundown, "rundown_items": get_times(rundown)}
 
     return render(request, "rundowns/components/rundown_ul.html", context)

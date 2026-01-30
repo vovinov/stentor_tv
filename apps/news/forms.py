@@ -40,25 +40,15 @@ class NewsEditForm(forms.ModelForm):
         fields = ["title", "content"]
 
 
-class NewsStatusChangeFormWithComment(forms.Form):
+class NewsAddCommentForm(forms.Form):
 
-    status = forms.ModelChoiceField(
-        label="Статус",
-        queryset=Status.objects.exclude(title="Создано"),
-        widget=forms.Select(attrs={"class": "input input-bordered w-full"}),
-    )
     comment = forms.CharField(
         label="Комментарий",
         widget=forms.Textarea(
-            attrs={"class": "input input-bordered w-full", "cols": "2", "rows": "20"}
+            attrs={
+                "class": "input input-bordered w-full h-auto",
+                "rows": 15,
+                "cols": 50,
+            }
         ),
-    )
-
-
-class NewsStatusChangeForm(forms.Form):
-
-    status = forms.ModelChoiceField(
-        label="Статус",
-        queryset=Status.objects.exclude(title="Создано"),
-        widget=forms.Select(attrs={"class": "input input-bordered w-full"}),
     )

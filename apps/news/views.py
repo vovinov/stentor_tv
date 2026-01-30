@@ -11,10 +11,9 @@ from utils import get_times
 
 from .models import News
 from .forms import (
+    NewsAddCommentForm,
     NewsCreationForm,
     NewsEditForm,
-    NewsStatusChangeForm,
-    NewsStatusChangeFormWithComment,
 )
 
 from simple_history.utils import update_change_reason
@@ -159,33 +158,31 @@ def change_asset_news(request, news_id, asset_id):
 
 
 def change_news_status(request, rundown_id, news_id):
+
+    status = request.GET["news_status"]
+
     news = News.objects.get(id=news_id)
     rundown = Rundown.objects.get(id=rundown_id)
 
-    news.status = Status.objects.get(title=request.GET["news_status"])
+    news.status = Status.objects.get(title=status)
     news.save()
 
     update_change_reason(news, f"Изменён статус на {news.status.title}")
 
+    if status == "Правка":
+        form = NewsAddCommentForm()
+        context = {"news_id": news_id, "form": form}
+
+        return render(
+            request, "rundowns/components/rundown_change_status.html", context
+        )
+
     context = {"rundown": rundown, "rundown_items": get_times(rundown)}
     return render(request, "rundowns/rundown_detail.html", context)
 
-    # if status.title == "Правка":
 
-    #     initial_data = {
-    #         "status": status,
-    #         "comment": None,
-    #     }
-    #     form = NewsStatusChangeFormWithComment(initial_data)
+def add_comment_to_news(request):
 
-    # else:
-    #     form = NewsStatusChangeForm({"status": status})
-
-    # context = {"news_id": news_id, "form": form}
-
-    # return render(request, "rundowns/components/rundown_change_status.html", context)
-
-    # def add_comment_to_news(request):
     news = News.objects.get(id=int(request.POST["news_id"]))
 
     comment, created = Comment.objects.get_or_create(
@@ -196,16 +193,23 @@ def change_news_status(request, rundown_id, news_id):
     )
 
     if created:
-        new_status = Status.objects.get(title=request.POST["status"])
-
-        news.status = new_status
         news.comment.add(comment)
         news.save()
-
-        update_change_reason(news, f"Изменён статус на {news.status.title}")
+        update_change_reason(news, f"Добавлен комментарий -- {comment.title}")
     else:
         messages.error(request, "Ошибка!")
         return redirect("index")
 
     messages.success(request, "Комментарий добавлен!")
+    return render(request, "index.html")
+
+
+def delete_comment_from_news(request, news_id, comment_id):
+    news = News.objects.get(id=news_id)
+    comment = Comment.objects.get(id=comment_id)
+    news.save()
+    update_change_reason(news, f"Удалён комментарий -- {comment.text}")
+    comment.delete()
+
+    messages.success(request, "Комментарий удалён!")
     return render(request, "index.html")

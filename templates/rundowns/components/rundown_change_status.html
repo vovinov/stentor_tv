@@ -1,11 +1,10 @@
+{% extends "base.html" %}
+
+{% block content %}
 
 <form 
     method="post"
-    {% if form.comment %}
     action="{% url "news:add_comment_to_news" %}"
-    {% else %}
-    action="#"
-    {% endif %}
     class="px-2">
   {% csrf_token %}
   {{ form.non_fields_error }}
@@ -26,7 +25,7 @@
   <button type="submit" class="btn btn-primary">Сохранить</button>
 </form>
 
-
+{% endblock content %}
 
 
 

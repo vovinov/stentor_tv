@@ -1,8 +1,10 @@
 from django.urls import path, include
 
 from .views import (
+    add_comment_to_news,
     change_asset_news,
     change_news_status,
+    delete_comment_from_news,
     manage_news,
     search_news,
     create_news,
@@ -49,5 +51,15 @@ urlpatterns = [
         "<int:rundown_id>/<int:news_id>/status/",
         change_news_status,
         name="change_news_status",
+    ),
+    path(
+        "comment/",
+        add_comment_to_news,
+        name="add_comment_to_news",
+    ),
+    path(
+        "<int:news_id>/comment/<int:comment_id>delete/",
+        delete_comment_from_news,
+        name="delete_comment_from_news",
     ),
 ]
