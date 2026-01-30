@@ -3,6 +3,8 @@ from django import forms
 from apps.news.models import News
 from django.contrib.auth.models import Group
 
+from apps.statuses.models import Status
+
 
 class NewsCreationForm(forms.ModelForm):
     title = forms.CharField(
@@ -38,18 +40,11 @@ class NewsEditForm(forms.ModelForm):
         fields = ["title", "content"]
 
 
-class NewsStatusChangeForm(forms.Form):
+class NewsStatusChangeFormWithComment(forms.Form):
 
-    CHOICES = [
-        ("Текст", "Текст"),
-        ("Монтаж", "Монтаж"),
-        ("Эфир", "Эфир"),
-        ("Правка", "Правка"),
-    ]
-
-    status = forms.ChoiceField(
+    status = forms.ModelChoiceField(
         label="Статус",
-        choices=CHOICES,
+        queryset=Status.objects.exclude(title="Создано"),
         widget=forms.Select(attrs={"class": "input input-bordered w-full"}),
     )
     comment = forms.CharField(
@@ -57,4 +52,13 @@ class NewsStatusChangeForm(forms.Form):
         widget=forms.Textarea(
             attrs={"class": "input input-bordered w-full", "cols": "2", "rows": "20"}
         ),
+    )
+
+
+class NewsStatusChangeForm(forms.Form):
+
+    status = forms.ModelChoiceField(
+        label="Статус",
+        queryset=Status.objects.exclude(title="Создано"),
+        widget=forms.Select(attrs={"class": "input input-bordered w-full"}),
     )

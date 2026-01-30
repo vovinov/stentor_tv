@@ -1,7 +1,7 @@
 
 {% load rundown_tags %}
 
-<li class="flex items-center" id="rundown_item">
+<li class="flex items-center">
 
   <!-- Кнопка вниз -->
   <div class="mr-3">
@@ -84,11 +84,11 @@
       <div class="col-span-3 flex flex-col justify-between">
         <div class="flex justify-between mb-2">
           <div class="font-bold">
-            <select hx-get="{% url "news:change_news_status" r.item.news.id %}" hx-target="#main_content" name="news_status" class="select">
+            <select hx-get="{% url "news:change_news_status" rundown.id r.item.news.id  %}" hx-target="#body" name="news_status" class="select">
               <option selected disabled>Статус</option>
               <option value="Правка" class="bg-warning">Правка</option>
               <option value="Текст" class="bg-success">Текст</option>
-              <option value="Монтаж" class="text-white bg-success-content">Монтаж</option>
+              <option value="Монтаж" class="text-white bg-primary">Монтаж</option>
               <option value="Эфир" class="bg-secondary">Эфир</option>
             </select>
           </div>

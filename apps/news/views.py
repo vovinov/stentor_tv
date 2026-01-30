@@ -1,16 +1,21 @@
 from django.shortcuts import render, redirect
 from django.urls import reverse_lazy
 from django.views.generic.edit import UpdateView
-from django.db.models import Q
 from django.contrib import messages
 
 from apps.assets.models import Asset
 from apps.comments.models import Comment
 from apps.rundowns.models import Rundown, RundownNews
 from apps.statuses.models import Status
+from utils import get_times
 
 from .models import News
-from .forms import NewsCreationForm, NewsEditForm, NewsStatusChangeForm
+from .forms import (
+    NewsCreationForm,
+    NewsEditForm,
+    NewsStatusChangeForm,
+    NewsStatusChangeFormWithComment,
+)
 
 from simple_history.utils import update_change_reason
 
@@ -110,7 +115,6 @@ class NewsUpdateView(UpdateView):
 
     model = News
     form_class = NewsEditForm
-    # fields = ["title", "content"]
     template_name = "news/news_edit.html"
     success_url = reverse_lazy("news:manage_news")
 
@@ -154,21 +158,34 @@ def change_asset_news(request, news_id, asset_id):
     return render(request, "index.html")
 
 
-def change_news_status(request, news_id):
+def change_news_status(request, rundown_id, news_id):
+    news = News.objects.get(id=news_id)
+    rundown = Rundown.objects.get(id=rundown_id)
 
-    initial_data = {
-        "status": request.GET["news_status"],
-        "comment": None,
-    }
+    news.status = Status.objects.get(title=request.GET["news_status"])
+    news.save()
 
-    form = NewsStatusChangeForm(initial=initial_data)
+    update_change_reason(news, f"Изменён статус на {news.status.title}")
 
-    context = {"news_id": news_id, "form": form}
+    context = {"rundown": rundown, "rundown_items": get_times(rundown)}
+    return render(request, "rundowns/rundown_detail.html", context)
 
-    return render(request, "rundowns/components/rundown_change_status.html", context)
+    # if status.title == "Правка":
 
+    #     initial_data = {
+    #         "status": status,
+    #         "comment": None,
+    #     }
+    #     form = NewsStatusChangeFormWithComment(initial_data)
 
-def add_comment_to_news(request):
+    # else:
+    #     form = NewsStatusChangeForm({"status": status})
+
+    # context = {"news_id": news_id, "form": form}
+
+    # return render(request, "rundowns/components/rundown_change_status.html", context)
+
+    # def add_comment_to_news(request):
     news = News.objects.get(id=int(request.POST["news_id"]))
 
     comment, created = Comment.objects.get_or_create(

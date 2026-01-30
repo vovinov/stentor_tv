@@ -1,5 +1,12 @@
 
-<form method="post" action="{% url "news:add_comment_to_news" %}" class="px-2">
+<form 
+    method="post"
+    {% if form.comment %}
+    action="{% url "news:add_comment_to_news" %}"
+    {% else %}
+    action="#"
+    {% endif %}
+    class="px-2">
   {% csrf_token %}
   {{ form.non_fields_error }}
   {% for field in form %}
