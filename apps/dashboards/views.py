@@ -1,8 +1,9 @@
 from django.shortcuts import redirect, render
-from django.urls import reverse
 from django.utils import timezone
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.models import Group
 
+from apps.news.models import News
 from apps.rundowns.models import Rundown
 
 
@@ -10,7 +11,6 @@ from apps.rundowns.models import Rundown
 def view_dashboard(request):
 
     user = request.user
-    print(user.groups.filter(name="boss").exists())
 
     if user.groups.filter(name="boss").exists():
         return redirect("dashboards:view_for_boss")
@@ -18,7 +18,11 @@ def view_dashboard(request):
     if user.groups.filter(name="editor").exists():
         return redirect("dashboards:view_for_editor")
 
+    if user.groups.filter(name="mont").exists():
+        return redirect("dashboards:view_for_mont")
 
+
+@login_required
 def view_for_boss(request):
     today = timezone.now()
     rundowns = Rundown.objects.filter(air_day=today.day)[:5]
@@ -27,5 +31,18 @@ def view_for_boss(request):
     return render(request, "index.html", context)
 
 
+@login_required
 def view_for_editor(request):
-    return render(request, "news/news_manage.html")
+    news = News.objects.filter(editor=request.user)
+    context = {"news": news}
+
+    return render(request, "news/news_manage.html", context)
+
+
+@login_required
+def view_for_mont(request):
+    news = News.objects.all().order_by("-updated_at")
+
+    context = {"news": news}
+
+    return render(request, "news/news_manage.html", context)

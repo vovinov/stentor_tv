@@ -28,7 +28,13 @@ def view_news_history(request, news_id):
 
 
 def manage_news(request):
-    news = News.objects.all().order_by("-created_at")
+
+    group_boss = request.user.groups.filter(name="boss").exists()
+
+    if group_boss:
+        news = News.objects.all().order_by("-updated_at")
+    else:
+        news = News.objects.filter(editor=request.user).order_by("-updated_at")
 
     context = {"news": news, "form": NewsCreationForm(), "add": False}
 
@@ -50,12 +56,9 @@ def create_news(request):
     if form.is_valid():
         news = form.save(commit=False)
 
-        news.created_by = request.user
-        news.updated_by = request.user
-
         status = Status.objects.get(id=1)
         news.status = status
-        news.save()
+        news.save(user=request.user)
 
         try:
             rundown = Rundown.objects.all().first()
@@ -118,7 +121,13 @@ class NewsUpdateView(UpdateView):
     model = News
     form_class = NewsEditForm
     template_name = "news/news_edit.html"
-    success_url = reverse_lazy("news:manage_news")
+    success_url = reverse_lazy(
+        "news:manage_news",
+    )
+
+    def form_valid(self, form):
+        form.instance.updated_by = self.request.user
+        return super().form_valid(form)
 
 
 def delete_news_from_rundown(request, item_id):
@@ -139,10 +148,9 @@ def delete_news_from_rundown(request, item_id):
 
 def show_assets_to_add_news(request, news_id):
     news = News.objects.get(id=news_id)
-    if news.asset:
-        assets = Asset.objects.exclude(id=news.asset.id)
-    else:
-        assets = Asset.objects.all()
+
+    if request.user.group(title="mont").exists():
+        assets = Asset.objects.filter(created_by=request.user)
 
     context = {"assets": assets, "news_id": news_id}
 
@@ -154,7 +162,7 @@ def change_asset_news(request, news_id, asset_id):
     asset = Asset.objects.get(id=asset_id)
 
     news.asset = asset
-    news.save()
+    news.save(user=request.user)
     update_change_reason(news, f"Изменён материал на {asset.title}")
 
     messages.success(request, "Материал успешно изменён")
@@ -170,7 +178,7 @@ def change_news_status(request, rundown_id, news_id):
     rundown = Rundown.objects.get(id=rundown_id)
 
     news.status = Status.objects.get(title=status)
-    news.save()
+    news.save(user=request.user)
 
     update_change_reason(news, f"Изменён статус на {news.status.title}")
 
@@ -199,7 +207,7 @@ def add_comment_to_news(request):
 
     if created:
         news.comment.add(comment)
-        news.save()
+        news.save(user=request.user)
         update_change_reason(news, f"Добавлен комментарий -- {comment.title}")
     else:
         messages.error(request, "Ошибка!")
@@ -212,7 +220,7 @@ def add_comment_to_news(request):
 def delete_comment_from_news(request, news_id, comment_id):
     news = News.objects.get(id=news_id)
     comment = Comment.objects.get(id=comment_id)
-    news.save()
+    news.save(user=request.user)
     update_change_reason(news, f"Удалён комментарий -- {comment.text}")
     comment.delete()
 

@@ -1,19 +1,25 @@
 <li class="border-b-1 border-black-300 flex p-1 justify-between items-center">
-  <div class=" text-md">{{n.title}}</div>
-  <div>
-    <span class="mr-20">{{ n.editor|default:""}}</span>
-    {% if add %}
+  <div class="text-md grow">{{n.title}}</div>
+  
+  <div class="status status-{{n.status.color}}"></div>
+  <div class="divider divider-horizontal"></div>
+  {% include "statuses/change_status.html" %}
+  <div class="divider divider-horizontal"></div>
+  <div class="w-10 ml-3">
+    {% if add and user.groups.all.0.name == "boss"  %}
     <a type="button" href="{% url "news:add_news_to_rundown" rundown.id n.id %}" class="btn btn-sm btn-square btn-success">
       <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-plus" viewBox="0 0 16 16">
         <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4"/>
       </svg>
     </a>
-    {% endif %}      
-    <a type="button" href="{% url "news:edit_news" n.id %}" class="btn btn-sm btn-square btn-warning">
-      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pencil-square" viewBox="0 0 16 16">
-        <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z"/>
-        <path fill-rule="evenodd" d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5z"/>
+    {% endif %} 
+    {% if user.groups.all.0.name == "mont" and n.status.title == "Монтаж" %}   
+    <button type="button" hx-get="{% url "news:show_assets_to_add_news" n.id %}" hx-target="#main_content" class="btn btn-sm btn-info btn-outline">
+      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-repeat" viewBox="0 0 16 16">
+        <path d="M11.534 7h3.932a.25.25 0 0 1 .192.41l-1.966 2.36a.25.25 0 0 1-.384 0l-1.966-2.36a.25.25 0 0 1 .192-.41m-11 2h3.932a.25.25 0 0 0 .192-.41L2.692 6.23a.25.25 0 0 0-.384 0L.342 8.59A.25.25 0 0 0 .534 9"/>
+        <path fill-rule="evenodd" d="M8 3c-1.552 0-2.94.707-3.857 1.818a.5.5 0 1 1-.771-.636A6.002 6.002 0 0 1 13.917 7H12.9A5 5 0 0 0 8 3M3.1 9a5.002 5.002 0 0 0 8.757 2.182.5.5 0 1 1 .771.636A6.002 6.002 0 0 1 2.083 9z"/>
       </svg>
-    </a>
+    </button>
+    {% endif %}
   </div>
 </li>

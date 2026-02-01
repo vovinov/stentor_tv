@@ -27,7 +27,7 @@ urlpatterns = [
         "<int:news_id>/assets/", show_assets_to_add_news, name="show_assets_to_add_news"
     ),
     path(
-        "<int:news_id>/assets/<int:asset_id>/",
+        "<int:news_id>/assets/<int:asset_id>",
         change_asset_news,
         name="change_asset_news",
     ),
@@ -48,7 +48,7 @@ urlpatterns = [
         name="delete_news_from_rundown",
     ),
     path(
-        "<int:rundown_id>/<int:news_id>/status/",
+        "<int:news_id>/status/",
         change_news_status,
         name="change_news_status",
     ),

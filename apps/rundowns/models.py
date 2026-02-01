@@ -51,11 +51,3 @@ class RundownNews(models.Model):
 
     def __repr_(self):
         return f"RundownNews --- {self.rundown} || Новость: {self.news}"
-
-
-class Category(models.Model):
-    title = models.CharField(max_length=100, blank=True)
-    order = models.PositiveIntegerField(default=0)
-
-    def __str__(self) -> str:
-        return self.title

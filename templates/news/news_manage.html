@@ -4,8 +4,10 @@
 
   <div class="flex justify-between mb-3">
 
+    {% if user.groups.all.0.name == "boss" %}
     <button class="btn btn-success" onclick="news_create_modal.showModal()">Создать новость</button>
-   
+    {% endif %}
+    
     <label class="input">
       <svg class="h-[1em] opacity-50" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
         <g

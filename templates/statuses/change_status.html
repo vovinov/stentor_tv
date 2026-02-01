@@ -1,0 +1,13 @@
+<div class="w-30 font-bold">
+  <select
+  hx-get="{% url "news:change_news_status" n.id  %}"
+  hx-target="#body" 
+  name="news_status" 
+  class="select" {% if n.status.title != "Монтаж" %} disabled {% endif %} >
+    <option {% if n.status.title == "Создано" %}selected{% endif %} disabled>----</option>
+    <option {% if n.status.title == "Правка" %}selected{% endif %} value="Правка" class="bg-warning">Правка</option>
+    <option {% if n.status.title == "Текст" %}selected{% endif %} value="Текст" class="bg-success">Текст</option>
+    <option {% if n.status.title == "Монтаж" %}selected{% endif %} value="Монтаж" class="text-white bg-primary">Монтаж</option>
+    <option {% if n.status.title == "Эфир" %}selected{% endif %} value="Эфир" class="bg-secondary">Эфир</option>
+  </select>
+</div>

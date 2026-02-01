@@ -84,19 +84,7 @@
 
       <div class="col-span-3 flex flex-col justify-between">
         <div class="flex justify-between mb-2">
-          <div class="font-bold">
-            <select
-            hx-get="{% url "news:change_news_status" rundown.id r.item.news.id  %}"
-            hx-target="#body" 
-            name="news_status" 
-            class="select">
-              <option selected disabled>Статус</option>
-              <option value="Правка" class="bg-warning">Правка</option>
-              <option value="Текст" class="bg-success">Текст</option>
-              <option value="Монтаж" class="text-white bg-primary">Монтаж</option>
-              <option value="Эфир" class="bg-secondary">Эфир</option>
-            </select>
-          </div>
+          {% include "statuses/change_status.html" %}
           <div>
             <a type="button" href="{% url "news:edit_news" r.item.news.id %}" class="btn btn-sm btn-circle btn-warning">
               <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pencil-square" viewBox="0 0 16 16">
