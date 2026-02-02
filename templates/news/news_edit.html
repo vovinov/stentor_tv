@@ -24,6 +24,20 @@
             {% endfor %}
             <button type="submit" class="btn btn-primary">Сохранить</button>
         </form>
+        
+        <script>
+            document.querySelector('.status-changer').addEventListener('change', function(e) {
+                const commentField = document.getElementById('id_comment');
+                
+                if (e.target.value == "2") {
+                    commentField.removeAttribute('disabled');
+                } else {
+                    commentField.setAttribute('disabled',"");
+                    // Очистить поле
+                    commentField.value = '';
+                }
+            });
+        </script>
     </div>
 
     <!-- Боковая панель -->

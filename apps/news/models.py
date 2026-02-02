@@ -16,7 +16,7 @@ class News(AuditModel):
         Asset, on_delete=models.SET_NULL, null=True, blank=True, related_name="news"
     )
     status = models.ForeignKey(Status, on_delete=models.SET_NULL, null=True)
-    editor = models.ForeignKey(get_user_model(), on_delete=models.SET_NULL, null=True)
+    editor = models.ForeignKey(get_user_model(), on_delete=models.SET_NULL, blank=True, null=True)
     history = HistoricalRecords()
 
     objects = DjangoQLQuerySet.as_manager()

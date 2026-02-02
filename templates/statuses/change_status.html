@@ -1,9 +1,15 @@
 <div class="w-30 font-bold">
   <select
-  hx-get="{% url "news:change_news_status" n.id  %}"
-  hx-target="#body" 
+  hx-get="{% url "news:change_news_status" n.id %}"
+  hx-swap="outerHTML"
+  {% if n.status.title != "Правка" %} hx-target="#news_item_{{forloop.counter}}" 
+  {% else  %}
+  hx-target="#body"
+  {% endif %}
   name="news_status" 
-  class="select" {% if n.status.title != "Монтаж" %} disabled {% endif %} >
+  class="select" 
+  {% if user.group.all.0.title == "mont" and n.status.title != "Монтаж" %} disabled {% endif %}
+  >
     <option {% if n.status.title == "Создано" %}selected{% endif %} disabled>----</option>
     <option {% if n.status.title == "Правка" %}selected{% endif %} value="Правка" class="bg-warning">Правка</option>
     <option {% if n.status.title == "Текст" %}selected{% endif %} value="Текст" class="bg-success">Текст</option>

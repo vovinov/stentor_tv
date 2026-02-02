@@ -4,7 +4,7 @@
 
   <div class="flex justify-between mb-3">
 
-    {% if user.groups.all.0.name == "boss" %}
+    {% if user.groups.all.0.name == "boss" and not add %}
     <button class="btn btn-success" onclick="news_create_modal.showModal()">Создать новость</button>
     {% endif %}
     

@@ -20,15 +20,15 @@ def view_dashboard(request):
 
     if user.groups.filter(name="mont").exists():
         return redirect("dashboards:view_for_mont")
+    
+    if user.groups.filter(name="release").exists():
+        return redirect("dashboards:view_for_release")
 
 
 @login_required
 def view_for_boss(request):
-    today = timezone.now()
-    rundowns = Rundown.objects.filter(air_day=today.day)[:5]
 
-    context = {"rundowns": rundowns}
-    return render(request, "index.html", context)
+    return render(request, "index.html")
 
 
 @login_required
@@ -41,6 +41,15 @@ def view_for_editor(request):
 
 @login_required
 def view_for_mont(request):
+    news = News.objects.all().order_by("-updated_at")
+
+    context = {"news": news}
+
+    return render(request, "news/news_manage.html", context)
+
+
+@login_required
+def view_for_release(request):
     news = News.objects.all().order_by("-updated_at")
 
     context = {"news": news}

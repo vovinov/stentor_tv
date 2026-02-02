@@ -20,6 +20,7 @@ class NewsCreationForm(forms.ModelForm):
         widget=forms.Select(attrs={"class": " w-full select"}),
         empty_label="Выберите редактора",
         label="Редактор",
+        required=False,
     )
 
     class Meta:
@@ -34,10 +35,24 @@ class NewsEditForm(forms.ModelForm):
     content = forms.CharField(
         label="Текст новости", widget=forms.Textarea(attrs={"class": "textarea w-full"})
     )
+    status = forms.ModelChoiceField(
+        queryset=Status.objects.exclude(title="Создано"),
+        widget=forms.Select(attrs={"class": "w-full select status-changer"}),
+        empty_label="Выберите статус",
+        label="Статус",
+    )
+    comment = forms.CharField(
+        label="Комментарий", widget=forms.Textarea(attrs={
+                "class": "input input-bordered w-full h-auto",
+                'disabled': True,
+                "rows": 5,
+                "cols": 50,
+            })
+    )
 
     class Meta:
         model = News
-        fields = ["title", "content"]
+        fields = ["title", "content", "status", "comment"]
 
 
 class NewsAddCommentForm(forms.Form):

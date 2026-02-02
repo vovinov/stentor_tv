@@ -117,7 +117,7 @@ def add_news_to_rundown(request, rundown_id, news_id):
 
 
 class NewsUpdateView(UpdateView):
-
+    
     model = News
     form_class = NewsEditForm
     template_name = "news/news_edit.html"
@@ -127,6 +127,24 @@ class NewsUpdateView(UpdateView):
 
     def form_valid(self, form):
         form.instance.updated_by = self.request.user
+
+        news = self.object
+
+        comment, created = Comment.objects.get_or_create(
+        text=form.cleaned_data["comment"],
+        news=news,
+        author=self.request.user,
+        updated_by=self.request.user,
+    )
+
+        if created:
+            news.comment.add(comment)
+            news.save(user=self.request.user)
+            update_change_reason(news, f"Добавлен комментарий -- {comment.text}")
+            messages.success(self.request, "Комментарий добавлен!")
+        else:
+            messages.error(self.request, "Ошибка!")    
+
         return super().form_valid(form)
 
 
@@ -149,8 +167,10 @@ def delete_news_from_rundown(request, item_id):
 def show_assets_to_add_news(request, news_id):
     news = News.objects.get(id=news_id)
 
-    if request.user.group(title="mont").exists():
+    if request.user.groups.filter(name="mont").exists():
         assets = Asset.objects.filter(created_by=request.user)
+    else:
+        assets = Asset.objects.all()
 
     context = {"assets": assets, "news_id": news_id}
 
@@ -170,12 +190,11 @@ def change_asset_news(request, news_id, asset_id):
     return render(request, "index.html")
 
 
-def change_news_status(request, rundown_id, news_id):
+def change_news_status(request, news_id):
 
     status = request.GET["news_status"]
 
     news = News.objects.get(id=news_id)
-    rundown = Rundown.objects.get(id=rundown_id)
 
     news.status = Status.objects.get(title=status)
     news.save(user=request.user)
@@ -185,14 +204,14 @@ def change_news_status(request, rundown_id, news_id):
     if status == "Правка":
         form = NewsAddCommentForm()
         context = {"news_id": news_id, "form": form}
-
+        
         return render(
             request, "rundowns/components/rundown_change_status.html", context
         )
 
-    context = {"rundown": rundown, "rundown_items": get_times(rundown)}
-    return render(request, "rundowns/rundown_detail.html", context)
-
+    context = {"n":news}
+    
+    return render(request, "news/components/news_item.html", context)
 
 def add_comment_to_news(request):
 
@@ -208,10 +227,10 @@ def add_comment_to_news(request):
     if created:
         news.comment.add(comment)
         news.save(user=request.user)
-        update_change_reason(news, f"Добавлен комментарий -- {comment.title}")
+        update_change_reason(news, f"Добавлен комментарий -- {comment.text}")
     else:
         messages.error(request, "Ошибка!")
-        return redirect("index")
+        return redirect("view_dashboard")
 
     messages.success(request, "Комментарий добавлен!")
     return render(request, "index.html")
