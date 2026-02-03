@@ -42,12 +42,14 @@ class NewsEditForm(forms.ModelForm):
         label="Статус",
     )
     comment = forms.CharField(
-        label="Комментарий", widget=forms.Textarea(attrs={
+        label="Комментарий", 
+        widget=forms.Textarea(attrs={
                 "class": "input input-bordered w-full h-auto",
                 'disabled': True,
                 "rows": 5,
                 "cols": 50,
-            })
+            }),
+        required=False
     )
 
     class Meta:

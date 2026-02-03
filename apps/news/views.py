@@ -1,3 +1,4 @@
+from django import forms
 from django.shortcuts import render, redirect
 from django.urls import reverse_lazy
 from django.views.generic.edit import UpdateView
@@ -121,32 +122,54 @@ class NewsUpdateView(UpdateView):
     model = News
     form_class = NewsEditForm
     template_name = "news/news_edit.html"
-    success_url = reverse_lazy(
-        "news:manage_news",
-    )
+    # success_url = reverse_lazy(
+    #     "news:manage_news",
+    # )
+
+    def get_form(self):
+        form = super().get_form()
+
+        if self.request.user.groups.filter(name='editor').exists():
+
+            form.fields['status'].queryset = Status.objects.filter(title="Монтаж")
+            form.fields['comment'].widget = forms.HiddenInput()
+            form.fields['comment'].label = ""
+            form.fields['comment'].required = False
+        
+        return form
 
     def form_valid(self, form):
         form.instance.updated_by = self.request.user
 
-        news = self.object
+        if form.cleaned_data["comment"]:
 
-        comment, created = Comment.objects.get_or_create(
-        text=form.cleaned_data["comment"],
-        news=news,
-        author=self.request.user,
-        updated_by=self.request.user,
-    )
+            news = self.object
 
-        if created:
-            news.comment.add(comment)
-            news.save(user=self.request.user)
-            update_change_reason(news, f"Добавлен комментарий -- {comment.text}")
-            messages.success(self.request, "Комментарий добавлен!")
-        else:
-            messages.error(self.request, "Ошибка!")    
+            comment, created = Comment.objects.get_or_create(
+            text=form.cleaned_data["comment"],
+            news=news,
+            author=self.request.user,
+            updated_by=self.request.user,
+            )
+
+            if created:
+                news.comment.add(comment)
+                news.save(user=self.request.user)
+                update_change_reason(news, f"Добавлен комментарий -- {comment.text}")
+                messages.success(self.request, "Комментарий добавлен!")
+            else:
+                messages.error(self.request, "Ошибка!")    
 
         return super().form_valid(form)
 
+    def get_success_url(self):
+
+        if self.request.user.groups.filter(name='editor').exists():
+            self.success_url = reverse_lazy("dashboards:view_for_editor")
+        else:
+            self.success_url = reverse_lazy("news:manage_news")
+        return super().get_success_url()
+    
 
 def delete_news_from_rundown(request, item_id):
     rundown_news = RundownNews.objects.get(id=item_id)

@@ -1,11 +1,9 @@
 from django.shortcuts import redirect, render
-from django.utils import timezone
+from django.db.models import Q
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth.models import Group
 
 from apps.news.models import News
-from apps.rundowns.models import Rundown
-
+from apps.statuses.models import Status
 
 @login_required
 def view_dashboard(request):
@@ -33,7 +31,8 @@ def view_for_boss(request):
 
 @login_required
 def view_for_editor(request):
-    news = News.objects.filter(editor=request.user)
+    status = Status.objects.get(title="Текст")
+    news = News.objects.filter(Q(editor=request.user) & Q(status=status))
     context = {"news": news}
 
     return render(request, "news/news_manage.html", context)

@@ -58,7 +58,7 @@ urlpatterns = [
         name="add_comment_to_news",
     ),
     path(
-        "<int:news_id>/comment/<int:comment_id>delete/",
+        "<int:news_id>/comment/<int:comment_id>/delete/",
         delete_comment_from_news,
         name="delete_comment_from_news",
     ),
