@@ -40,6 +40,7 @@ class NewsEditForm(forms.ModelForm):
         widget=forms.Select(attrs={"class": "w-full select status-changer"}),
         empty_label="Выберите статус",
         label="Статус",
+        required=False
     )
     comment = forms.CharField(
         label="Комментарий", 

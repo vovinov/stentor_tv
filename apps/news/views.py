@@ -1,14 +1,17 @@
 from django import forms
-from django.shortcuts import render, redirect
+from django.http import JsonResponse
+from django.shortcuts import get_object_or_404, render, redirect
 from django.urls import reverse_lazy
+from django.utils import timezone
 from django.views.generic.edit import UpdateView
+from django.views.decorators.http import require_http_methods
+from django.views.decorators.csrf import csrf_exempt
 from django.contrib import messages
 
 from apps.assets.models import Asset
 from apps.comments.models import Comment
 from apps.rundowns.models import Rundown, RundownNews
 from apps.statuses.models import Status
-from utils import get_times
 
 from .models import News
 from .forms import (
@@ -122,9 +125,38 @@ class NewsUpdateView(UpdateView):
     model = News
     form_class = NewsEditForm
     template_name = "news/news_edit.html"
-    # success_url = reverse_lazy(
-    #     "news:manage_news",
-    # )
+
+    def get_context_data(self, **kwargs):
+
+        news = self.object
+
+        now = timezone.now()
+
+        is_locked_for_me = (
+            news.locked_until and 
+            news.locked_until > now and 
+            news.locked_by != self.request.user
+        )
+
+        if not is_locked_for_me:
+            # Захватываем lock
+            News.objects.filter(id=news.id).update(
+                locked_by=self.request.user,
+                locked_until=now + timezone.timedelta(minutes=1)
+            )
+        
+        context = super().get_context_data(**kwargs)
+
+        context.update({
+            'is_locked': is_locked_for_me,
+            'lock_info': {
+                'username': news.locked_by.username if news.locked_by else None,
+                'until': news.locked_until
+            } if is_locked_for_me else None,
+            'my_lock_id': news.id
+        })
+
+        return context
 
     def get_form(self):
         form = super().get_form()
@@ -170,6 +202,49 @@ class NewsUpdateView(UpdateView):
             self.success_url = reverse_lazy("news:manage_news")
         return super().get_success_url()
     
+    def post(self, request, *args, **kwargs):
+        news = self.get_object()
+
+        now = timezone.now()
+        
+        # Проверяем lock на POST
+        is_locked_for_me = (
+            news.locked_until and 
+            news.locked_until > now and 
+            news.locked_by != request.user
+        )
+        
+        if is_locked_for_me:
+            return JsonResponse({
+                'error': f'Новость редактирует {news.locked_by.username}'
+            }, status=423)
+        
+        response = super().post(request, *args, **kwargs)
+    
+        News.objects.filter(id=news.id).update(
+            locked_by=None,
+            locked_until=None
+        )
+
+        return response
+
+@require_http_methods(["POST"])
+@csrf_exempt
+def heartbeat_lock(request, pk):
+    news = get_object_or_404(News, pk=pk)
+    now = timezone.now()
+    
+    if (news.locked_by == request.user and 
+        news.locked_until and 
+        news.locked_until > now):
+        
+        News.objects.filter(id=pk).update(
+            locked_until = now + timezone.timedelta(minutes=5)
+        )
+        return JsonResponse({'status': 'ok'})
+    
+    return JsonResponse({'error': 'no permission'}, status=403)
+
 
 def delete_news_from_rundown(request, item_id):
     rundown_news = RundownNews.objects.get(id=item_id)
@@ -267,4 +342,4 @@ def delete_comment_from_news(request, news_id, comment_id):
     comment.delete()
 
     messages.success(request, "Комментарий удалён!")
-    return render(request, "index.html")
+    return redirect("dashboards:mont")

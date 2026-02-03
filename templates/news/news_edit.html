@@ -61,4 +61,55 @@
     </div>
 </div>
 
+{% if my_lock_id %}
+<script>
+    let heartbeatInterval;
+
+    function getCookie(name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            const cookies = document.cookie.split(';');
+            for (let i = 0; i < cookies.length; i++) {
+                const cookie = cookies[i].trim();
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+
+    function startHeartbeat(pk) {
+        heartbeatInterval = setInterval(() => {
+            fetch(`/news/${pk}/heartbeat/`, {
+                method: 'POST',
+                headers: {
+                    'X-CSRFToken': getCookie('csrftoken'),
+                    'Content-Type': 'application/json'  <!-- ✅ ИСПРАВЛЕНО -->
+                },
+                body: JSON.stringify({})  <!-- Пустой JSON для POST -->
+            })
+            .catch(error => console.error('Heartbeat error:', error));
+        }, 30000);
+    }
+
+    startHeartbeat({{ object.pk }});  <!-- Передаём pk в JS -->
+
+    window.addEventListener('beforeunload', () => {
+        if (heartbeatInterval) {
+            clearInterval(heartbeatInterval);
+        }
+    });
+</script>
+{% endif %}
+
+<style>
+.read-only input, .read-only textarea, .read-only button {
+    background-color: #f8f9fa;
+    pointer-events: none;
+    opacity: 0.6;
+}
+</style>
+
 {% endblock content %}

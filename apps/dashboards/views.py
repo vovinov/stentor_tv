@@ -40,7 +40,8 @@ def view_for_editor(request):
 
 @login_required
 def view_for_mont(request):
-    news = News.objects.all().order_by("-updated_at")
+    status = Status.objects.filter(title__in=["Монтаж", "Правка"])
+    news = News.objects.filter(status__in=status).order_by("-updated_at")
 
     context = {"news": news}
 
