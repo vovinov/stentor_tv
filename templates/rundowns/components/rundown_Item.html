@@ -17,15 +17,15 @@
 
   <!-- Карточка -->
   <details class="collapse bg-base-100 border-base-300 border">
-    <summary class="collapse-title font-semibold col-span-10">
-      <div class="flex items-align">
+    <summary class="collapse-title font-semibold">
+      <div class="flex items-center">
         <div class="font-bold">{{r.item.position}}</div>
         <div class="divider divider-horizontal"></div>
         <div class="font-bold">{{r.time.start_time|time:"H:i:s"}}</div>
         <div class="divider divider-horizontal"></div>
         <div class="font-bold grow">{{r.item.news.title}}</div>
         <div class="divider divider-horizontal"></div>
-        <div class="status status-{{r.item.news.status.color}}"></div>
+        <div class="status-xl status status-{{r.item.news.status.color}}"></div>
         <div class="divider divider-horizontal"></div>
         <div class="font-bold">{{r.item.news.asset.duration|format_duration|default:"00:00:00"}}</div>
         <div class="divider divider-horizontal"></div>

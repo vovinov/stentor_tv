@@ -239,7 +239,7 @@ def heartbeat_lock(request, pk):
         news.locked_until > now):
         
         News.objects.filter(id=pk).update(
-            locked_until = now + timezone.timedelta(minutes=5)
+            locked_until = now + timezone.timedelta(minutes=1)
         )
         return JsonResponse({'status': 'ok'})
     

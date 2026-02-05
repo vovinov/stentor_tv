@@ -61,9 +61,9 @@
     </div>
 </div>
 
-{% if my_lock_id %}
 <script>
     let heartbeatInterval;
+    let newsPk = {{ object.pk|default:0 }};
 
     function getCookie(name) {
         let cookieValue = null;
@@ -80,36 +80,43 @@
         return cookieValue;
     }
 
-    function startHeartbeat(pk) {
+    function startHeartbeat() {
+        if (heartbeatInterval) clearInterval(heartbeatInterval);
+        
         heartbeatInterval = setInterval(() => {
-            fetch(`/news/${pk}/heartbeat/`, {
+            fetch(`/news/${newsPk}/heartbeat/`, {
                 method: 'POST',
                 headers: {
                     'X-CSRFToken': getCookie('csrftoken'),
-                    'Content-Type': 'application/json'  <!-- ✅ ИСПРАВЛЕНО -->
+                    'Content-Type': 'application/json'
                 },
-                body: JSON.stringify({})  <!-- Пустой JSON для POST -->
+                body: JSON.stringify({})
             })
-            .catch(error => console.error('Heartbeat error:', error));
-        }, 30000);
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Heartbeat failed');
+                }
+            })
+            .catch(error => {
+                console.error('Heartbeat error:', error);
+            });
+        }, 30000); // каждые 30 секунд
     }
 
-    startHeartbeat({{ object.pk }});  <!-- Передаём pk в JS -->
-
-    window.addEventListener('beforeunload', () => {
-        if (heartbeatInterval) {
-            clearInterval(heartbeatInterval);
-        }
-    });
+    // Запускаем heartbeat ТОЛЬКО если НЕ заблокировано
+    {% if not is_locked and my_lock_id %}
+        startHeartbeat();
+        
+        // Останавливаем при закрытии вкладки
+        window.addEventListener('beforeunload', () => {
+            if (heartbeatInterval) {
+                clearInterval(heartbeatInterval);
+            }
+        });
+    {% endif %}
 </script>
-{% endif %}
 
-<style>
-.read-only input, .read-only textarea, .read-only button {
-    background-color: #f8f9fa;
-    pointer-events: none;
-    opacity: 0.6;
-}
-</style>
+
+
 
 {% endblock content %}
