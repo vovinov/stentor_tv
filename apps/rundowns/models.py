@@ -1,6 +1,6 @@
 from datetime import timedelta
 from django.db import models
-from apps.common.models import TimedBaseModel
+from apps.common.models import AuditModel
 from apps.news.models import News
 
 from django.contrib.auth import get_user_model
@@ -9,19 +9,13 @@ from djangoql.queryset import DjangoQLQuerySet
 from simple_history.models import HistoricalRecords
 
 
-class Rundown(TimedBaseModel):
+class Rundown(AuditModel):
     air_hour = models.IntegerField(default=0)
     air_day = models.IntegerField(default=0)
     air_month = models.IntegerField(default=0)
     air_year = models.IntegerField(default=0)
     duration = models.DurationField(default=timedelta(0))
     news = models.ManyToManyField(News, through="RundownNews")
-    created_by = models.ForeignKey(
-        get_user_model(), on_delete=models.DO_NOTHING, related_name="rundown_creator"
-    )
-    updated_by = models.ForeignKey(
-        get_user_model(), on_delete=models.DO_NOTHING, related_name="rundown_updater"
-    )
     history = HistoricalRecords()
 
     objects = DjangoQLQuerySet.as_manager()
