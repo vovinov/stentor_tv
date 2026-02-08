@@ -63,17 +63,16 @@ def create_rundown(request):
     current_month = timezone.localtime().month
 
     rundown = Rundown.objects.all().first()
-
-    rundown_new, created = Rundown.objects.get_or_create(
-        air_year=current_year,
-        air_month=current_month,
-        air_day=current_day,
-        air_hour=next_hour,
-        created_by=request.user,
-        updated_by=request.user,
-    )
-
-    if not created:
+    try:
+        rundown_new, created = Rundown.objects.get_or_create(
+            air_year=current_year,
+            air_month=current_month,
+            air_day=current_day,
+            air_hour=next_hour,
+            created_by=request.user,
+            updated_by=request.user,
+        )
+    except:
         messages.error(request, "Выпуск не создан!")
         return render(request, "rundowns/rundown_manage.html")
 

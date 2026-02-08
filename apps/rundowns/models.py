@@ -1,9 +1,9 @@
 from datetime import timedelta
 from django.db import models
+from django.db.models import UniqueConstraint
+
 from apps.common.models import AuditModel
 from apps.news.models import News
-
-from django.contrib.auth import get_user_model
 
 from djangoql.queryset import DjangoQLQuerySet
 from simple_history.models import HistoricalRecords
@@ -22,6 +22,13 @@ class Rundown(AuditModel):
 
     class Meta:
         ordering = ["-air_year", "-air_month", "-air_day", "-air_hour"]
+
+        constraints = [
+            UniqueConstraint(
+                fields=['air_hour', 'air_day', 'air_month', 'air_year'],
+                name='unique_airt_time'
+            )
+        ]
 
     def __str__(self):
         return f"Выпуск {self.air_year} {self.air_month} {self.air_day} {self.air_hour}"

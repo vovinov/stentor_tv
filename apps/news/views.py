@@ -180,7 +180,7 @@ class NewsUpdateView(UpdateView):
             comment, created = Comment.objects.get_or_create(
             text=form.cleaned_data["comment"],
             news=news,
-            author=self.request.user,
+            created_by=self.request.user,
             updated_by=self.request.user,
             )
 
@@ -318,7 +318,7 @@ def add_comment_to_news(request):
     comment, created = Comment.objects.get_or_create(
         text=request.POST["comment"],
         news=news,
-        author=request.user,
+        created_by=request.user,
         updated_by=request.user,
     )
 
@@ -342,4 +342,4 @@ def delete_comment_from_news(request, news_id, comment_id):
     comment.delete()
 
     messages.success(request, "Комментарий удалён!")
-    return redirect("dashboards:mont")
+    return redirect("view_dashboard")
