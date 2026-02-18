@@ -1,4 +1,4 @@
-from django.urls import path, include
+from django.urls import path
 
 from .views import (
     add_comment_to_news,
@@ -25,9 +25,7 @@ urlpatterns = [
     path("manage/search/", search_news, name="search_news"),
     path("create/", create_news, name="create_news"),
     path(
-        "<int:news_id>/assets/", 
-        show_assets_to_add_news, 
-        name="show_assets_to_add_news"
+        "<int:news_id>/assets/", show_assets_to_add_news, name="show_assets_to_add_news"
     ),
     path(
         "<int:news_id>/assets/<int:asset_id>",
@@ -65,5 +63,5 @@ urlpatterns = [
         delete_comment_from_news,
         name="delete_comment_from_news",
     ),
-    path('<int:pk>/heartbeat/', heartbeat_lock, name='heartbeat_lock'),
+    path("<int:pk>/heartbeat/", heartbeat_lock, name="heartbeat_lock"),
 ]

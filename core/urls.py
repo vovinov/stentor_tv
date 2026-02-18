@@ -30,4 +30,5 @@ urlpatterns = [
     path("news/", include("apps.news.urls", namespace="news")),
     path("rundowns/", include("apps.rundowns.urls", namespace="rundowns")),
     path("users/", include("apps.users.urls", namespace="users")),
+    path("assets/", include("apps.assets.urls", namespace="assets")),
 ] + debug_toolbar_urls()

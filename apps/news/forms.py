@@ -1,8 +1,7 @@
 from django import forms
-
-from apps.news.models import News
 from django.contrib.auth.models import Group
 
+from apps.news.models import News
 from apps.statuses.models import Status
 
 
@@ -40,22 +39,31 @@ class NewsEditForm(forms.ModelForm):
         widget=forms.Select(attrs={"class": "w-full select status-changer"}),
         empty_label="Выберите статус",
         label="Статус",
-        required=False
+        required=False,
     )
     comment = forms.CharField(
-        label="Комментарий", 
-        widget=forms.Textarea(attrs={
+        label="Комментарий",
+        widget=forms.Textarea(
+            attrs={
                 "class": "input input-bordered w-full h-auto",
-                'disabled': True,
+                "disabled": True,
                 "rows": 5,
                 "cols": 50,
-            }),
-        required=False
+            }
+        ),
+        required=False,
+    )
+    editor = forms.ModelChoiceField(
+        queryset=Group.objects.get(name="editor").user_set.all(),
+        widget=forms.Select(attrs={"class": " w-full select"}),
+        empty_label="Выберите редактора",
+        label="Редактор",
+        required=False,
     )
 
     class Meta:
         model = News
-        fields = ["title", "content", "status", "comment"]
+        fields = ["title", "content", "status", "comment", "editor"]
 
 
 class NewsAddCommentForm(forms.Form):

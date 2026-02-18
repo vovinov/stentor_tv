@@ -1,7 +1,8 @@
 from django.utils import timezone
 from datetime import time
+from django.db import transaction
 
-from apps.rundowns.models import Rundown
+from apps.news.models import News
 
 
 def round_to_hour(dt):
@@ -60,3 +61,9 @@ def get_times(rundown):
         start_time = end_time
 
     return rundown_items
+
+
+def clean_all_news_locks():
+
+    now = timezone.now()
+    News.objects.filter(locked_until__lt=now).update(locked_by=None, locked_until=None)

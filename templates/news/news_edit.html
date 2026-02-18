@@ -22,14 +22,18 @@
                 {% endif %}
             </div>         
             {% endfor %}
-            <button type="submit" class="btn btn-primary">Сохранить</button>
+            <div class="flex justify-between">
+                <button type="submit" class="btn btn-primary">Сохранить</button>
+                <button class="btn">Назад</button>
+            </div>
+            
         </form>
         
         <script>
             document.querySelector('.status-changer').addEventListener('change', function(e) {
                 const commentField = document.getElementById('id_comment');
                 
-                if (e.target.value == "2") {
+                if (e.target.value == "4") {
                     commentField.removeAttribute('disabled');
                 } else {
                     commentField.setAttribute('disabled',"");

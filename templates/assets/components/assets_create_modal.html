@@ -1,0 +1,30 @@
+<dialog id="assets_create_modal" class="modal">
+  <div class="modal-box">
+    <h3 class="text-lg font-bold mb-2">Создание материала</h3>
+    
+    <form hx-post="{% url "assets:create_asset" %}" hx-on:success="assets_create_modal.close(); this.reset();" hx-target="#news_list" hx-swap="afterbegin">
+      {% csrf_token %}
+
+      {% for field in form %}
+        {{ form_non_fields_error }}
+        <div class="flex flex-col mb-2">
+          <label class="label">
+            <span class="label-text mb-2">{{ field.label }}</span>
+          </label>
+          {{field }}
+          {% if field.errors %}
+          <label class="label text-error">
+              {{ field.errors }}
+          </label>
+          {% endif %}
+        </div>
+
+      {% endfor %}
+      <div class="modal-action">
+        <button type="submit" class="btn btn-primary">Создать материал</button>
+        <button class="btn" onclick="assets_create_modal.close()">Закрыть</button>
+      </div>
+    </form>
+  </div>
+</dialog>
+

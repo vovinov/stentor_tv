@@ -1,14 +1,16 @@
 {% extends "base.html" %}
 
 {% block content %}
+
+<button class="btn btn-success" onclick="assets_create_modal.showModal()">Создать материал</button>
 <h2 class="text-3xl text-center mb-10">Выберите материал</h2>
 
 <ul class="list bg-base-100 rounded-box shadow-md" id="news_list">
-{% for a in assets %}
-  
-{% include "assets/assets_item.html" %}
+  {% for n in news %}
+    
+  {% include "assets/assets_item.html" %}
 
-{% endfor %}
+  {% endfor %}
 </ul>
 
 {% endblock content %}

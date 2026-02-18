@@ -8,10 +8,12 @@ from django.views.decorators.http import require_http_methods
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib import messages
 
+from apps.assets.forms import AssetCreationForm
 from apps.assets.models import Asset
 from apps.comments.models import Comment
 from apps.rundowns.models import Rundown, RundownNews
 from apps.statuses.models import Status
+from utils import clean_all_news_locks
 
 from .models import News
 from .forms import (
@@ -32,6 +34,8 @@ def view_news_history(request, news_id):
 
 
 def manage_news(request):
+
+    clean_all_news_locks()
 
     group_boss = request.user.groups.filter(name="boss").exists()
 
@@ -121,7 +125,7 @@ def add_news_to_rundown(request, rundown_id, news_id):
 
 
 class NewsUpdateView(UpdateView):
-    
+
     model = News
     form_class = NewsEditForm
     template_name = "news/news_edit.html"
@@ -133,41 +137,53 @@ class NewsUpdateView(UpdateView):
         now = timezone.now()
 
         is_locked_for_me = (
-            news.locked_until and 
-            news.locked_until > now and 
-            news.locked_by != self.request.user
+            news.locked_until
+            and news.locked_until > now
+            and news.locked_by != self.request.user
         )
 
         if not is_locked_for_me:
             # Захватываем lock
             News.objects.filter(id=news.id).update(
                 locked_by=self.request.user,
-                locked_until=now + timezone.timedelta(minutes=1)
+                locked_until=now + timezone.timedelta(minutes=1),
             )
-        
+
         context = super().get_context_data(**kwargs)
 
-        context.update({
-            'is_locked': is_locked_for_me,
-            'lock_info': {
-                'username': news.locked_by.username if news.locked_by else None,
-                'until': news.locked_until
-            } if is_locked_for_me else None,
-            'my_lock_id': news.id
-        })
+        context.update(
+            {
+                "is_locked": is_locked_for_me,
+                "lock_info": (
+                    {
+                        "username": news.locked_by.username if news.locked_by else None,
+                        "until": news.locked_until,
+                    }
+                    if is_locked_for_me
+                    else None
+                ),
+                "my_lock_id": news.id,
+            }
+        )
 
         return context
 
     def get_form(self):
         form = super().get_form()
 
-        if self.request.user.groups.filter(name='editor').exists():
+        if not self.request.user.groups.filter(name="boss").exists():
+            form.fields["editor"].disabled = True
 
-            form.fields['status'].queryset = Status.objects.filter(title="Монтаж")
-            form.fields['comment'].widget = forms.HiddenInput()
-            form.fields['comment'].label = ""
-            form.fields['comment'].required = False
-        
+        if self.request.user.groups.filter(name="editor").exists():
+
+            form.fields["status"].initial = Status.objects.get(title="Текст")
+            form.fields["status"].queryset = Status.objects.filter(
+                title__in=["Текст", "Монтаж"]
+            )
+            form.fields["comment"].widget = forms.HiddenInput()
+            form.fields["comment"].label = ""
+            form.fields["comment"].required = False
+
         return form
 
     def form_valid(self, form):
@@ -178,10 +194,10 @@ class NewsUpdateView(UpdateView):
             news = self.object
 
             comment, created = Comment.objects.get_or_create(
-            text=form.cleaned_data["comment"],
-            news=news,
-            created_by=self.request.user,
-            updated_by=self.request.user,
+                text=form.cleaned_data["comment"],
+                news=news,
+                created_by=self.request.user,
+                updated_by=self.request.user,
             )
 
             if created:
@@ -190,60 +206,56 @@ class NewsUpdateView(UpdateView):
                 update_change_reason(news, f"Добавлен комментарий -- {comment.text}")
                 messages.success(self.request, "Комментарий добавлен!")
             else:
-                messages.error(self.request, "Ошибка!")    
+                messages.error(self.request, "Ошибка!")
 
         return super().form_valid(form)
 
     def get_success_url(self):
 
-        if self.request.user.groups.filter(name='editor').exists():
+        if self.request.user.groups.filter(name="editor").exists():
             self.success_url = reverse_lazy("dashboards:view_for_editor")
         else:
             self.success_url = reverse_lazy("news:manage_news")
         return super().get_success_url()
-    
+
     def post(self, request, *args, **kwargs):
         news = self.get_object()
 
         now = timezone.now()
-        
+
         # Проверяем lock на POST
         is_locked_for_me = (
-            news.locked_until and 
-            news.locked_until > now and 
-            news.locked_by != request.user
-        )
-        
-        if is_locked_for_me:
-            return JsonResponse({
-                'error': f'Новость редактирует {news.locked_by.username}'
-            }, status=423)
-        
-        response = super().post(request, *args, **kwargs)
-    
-        News.objects.filter(id=news.id).update(
-            locked_by=None,
-            locked_until=None
+            news.locked_until
+            and news.locked_until > now
+            and news.locked_by != request.user
         )
 
+        if is_locked_for_me:
+            return JsonResponse(
+                {"error": f"Новость редактирует {news.locked_by.username}"}, status=423
+            )
+
+        response = super().post(request, *args, **kwargs)
+
+        News.objects.filter(id=news.id).update(locked_by=None, locked_until=None)
+
         return response
+
 
 @require_http_methods(["POST"])
 @csrf_exempt
 def heartbeat_lock(request, pk):
     news = get_object_or_404(News, pk=pk)
     now = timezone.now()
-    
-    if (news.locked_by == request.user and 
-        news.locked_until and 
-        news.locked_until > now):
-        
+
+    if news.locked_by == request.user and news.locked_until and news.locked_until > now:
+
         News.objects.filter(id=pk).update(
-            locked_until = now + timezone.timedelta(minutes=1)
+            locked_until=now + timezone.timedelta(minutes=1)
         )
-        return JsonResponse({'status': 'ok'})
-    
-    return JsonResponse({'error': 'no permission'}, status=403)
+        return JsonResponse({"status": "ok"})
+
+    return JsonResponse({"error": "no permission"}, status=403)
 
 
 def delete_news_from_rundown(request, item_id):
@@ -263,14 +275,11 @@ def delete_news_from_rundown(request, item_id):
 
 
 def show_assets_to_add_news(request, news_id):
-    news = News.objects.get(id=news_id)
+    form = AssetCreationForm()
 
-    if request.user.groups.filter(name="mont").exists():
-        assets = Asset.objects.filter(created_by=request.user)
-    else:
-        assets = Asset.objects.all()
+    assets = Asset.objects.all()
 
-    context = {"assets": assets, "news_id": news_id}
+    context = {"assets": assets, "news_id": news_id, "form": form}
 
     return render(request, "assets/assets_change.html", context)
 
@@ -280,12 +289,16 @@ def change_asset_news(request, news_id, asset_id):
     asset = Asset.objects.get(id=asset_id)
 
     news.asset = asset
+
+    news.status = Status.objects.get(title="Эфир")
+
     news.save(user=request.user)
     update_change_reason(news, f"Изменён материал на {asset.title}")
 
     messages.success(request, "Материал успешно изменён")
 
-    return render(request, "index.html")
+    if request.user.groups.filter(name="mont").exists():
+        return redirect("dashboards:view_for_mont")
 
 
 def change_news_status(request, news_id):
@@ -302,14 +315,15 @@ def change_news_status(request, news_id):
     if status == "Правка":
         form = NewsAddCommentForm()
         context = {"news_id": news_id, "form": form}
-        
+
         return render(
             request, "rundowns/components/rundown_change_status.html", context
         )
 
-    context = {"n":news}
-    
+    context = {"n": news}
+
     return render(request, "news/components/news_item.html", context)
+
 
 def add_comment_to_news(request):
 
