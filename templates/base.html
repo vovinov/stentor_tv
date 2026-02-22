@@ -7,6 +7,7 @@
     <title>STENTOR TV</title>
 
     <link href="https://cdn.jsdelivr.net/npm/daisyui@5" rel="stylesheet" type="text/css" />
+    <link rel="stylesheet" href="https://cdn.plyr.io/3.7.8/plyr.css" />
     <link rel="stylesheet" href="{% static "css/styles.css" %}">
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
   </head>
@@ -56,6 +57,11 @@
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/htmx.org@2.0.8/dist/htmx.min.js" integrity="sha384-/TgkGk7p307TH7EXJDuUlgG3Ce1UVolAOFopFekQkkXihi5u/6OCvVKyz1W+idaz" crossorigin="anonymous"></script>
-    
+    <script src="https://cdn.plyr.io/3.7.8/plyr.js"></script>
+    <script>
+      document.addEventListener('DOMContentLoaded', () => {
+        const player = new Plyr('#player');
+      });
+    </script>
   </body>
 </html>

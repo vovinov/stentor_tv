@@ -2,7 +2,7 @@
   <div class="modal-box">
     <h3 class="text-lg font-bold mb-2">Создание материала</h3>
     
-    <form hx-post="{% url "assets:create_asset" %}" hx-on:success="assets_create_modal.close(); this.reset();" hx-target="#news_list" hx-swap="afterbegin">
+    <form hx-post="{% url "assets:create_asset" %}" hx-on:success="assets_create_modal.close(); this.reset();" hx-swap="afterbegin" enctype="multipart/form-data">
       {% csrf_token %}
 
       {% for field in form %}

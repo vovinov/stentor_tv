@@ -1,0 +1,17 @@
+<dialog id="video_modal_{{n.id}}" class="modal">
+    <div class="modal-box flex flex-col">
+        <div class="mb-2">
+            <video id="player" playsinline controls>
+            <source
+            {% if n.asset.video %} 
+            src="{{n.asset.video.url}}"
+            {% else %}
+            src="#"
+            {% endif %}
+            type="video/mp4" />
+            </video>
+        </div> 
+        <button class="btn w-20 self-end" onclick="video_modal_{{n.id}}.close()">Закрыть</button>
+    </div>
+</dialog>
+

@@ -18,7 +18,8 @@ class News(AuditModel):
     status = models.ForeignKey(Status, on_delete=models.SET_NULL, null=True)
     locked_by = models.ForeignKey(get_user_model(), on_delete=models.CASCADE, blank=True, null=True, related_name="locked_news")
     locked_until = models.DateTimeField(null=True, blank=True)
-    editor = models.ForeignKey(get_user_model(), on_delete=models.SET_NULL, blank=True, null=True, related_name="news")
+    editor = models.ForeignKey(get_user_model(), on_delete=models.SET_NULL, blank=True, null=True, related_name="news_editor")
+    mont = models.ForeignKey(get_user_model(), on_delete=models.SET_NULL, blank=True, null=True, related_name="news_mont")
     history = HistoricalRecords()
 
     objects = DjangoQLQuerySet.as_manager()

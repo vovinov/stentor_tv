@@ -8,7 +8,7 @@ from apps.common.models import AuditModel
 class Asset(AuditModel):
     title = models.CharField(max_length=200, unique=True)
     duration = models.DurationField(default=timedelta(0))
-    mont = models.ForeignKey(get_user_model(), on_delete=models.SET_NULL, null=True)
+    video = models.FileField(upload_to='videos/', null=True)
 
     def __str__(self):
         return self.title

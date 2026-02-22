@@ -7,6 +7,7 @@ from django.views.generic.edit import UpdateView
 from django.views.decorators.http import require_http_methods
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib import messages
+from django.db.models import Q
 
 from apps.assets.forms import AssetCreationForm
 from apps.assets.models import Asset
@@ -97,7 +98,8 @@ def create_news(request):
 
 def show_news_to_add_rundown(request, rundown_id):
     rundown = Rundown.objects.get(id=rundown_id)
-    news = News.objects.exclude(rundown_news__in=rundown.rundown_news.all()).order_by(
+    status = Status.objects.get(title="Эфир")
+    news = News.objects.filter(Q(rundown_news__in=rundown.rundown_news.all()) & Q(status=status)).order_by(
         "-created_at"
     )
 
@@ -277,11 +279,16 @@ def delete_news_from_rundown(request, item_id):
 def show_assets_to_add_news(request, news_id):
     form = AssetCreationForm()
 
-    assets = Asset.objects.all()
+    news = News.objects.get(id=news_id)
 
+    if news.asset:
+        assets = Asset.objects.exclude(id=news.asset.id).filter(title__icontains=news.title)
+    else:
+        assets = Asset.objects.filter(title__icontains=news.title)
+        
     context = {"assets": assets, "news_id": news_id, "form": form}
 
-    return render(request, "assets/assets_change.html", context)
+    return render(request, "assets/assets_manage.html", context)
 
 
 def change_asset_news(request, news_id, asset_id):
@@ -300,6 +307,7 @@ def change_asset_news(request, news_id, asset_id):
     if request.user.groups.filter(name="mont").exists():
         return redirect("dashboards:view_for_mont")
 
+        
 
 def change_news_status(request, news_id):
 
@@ -356,4 +364,23 @@ def delete_comment_from_news(request, news_id, comment_id):
     comment.delete()
 
     messages.success(request, "Комментарий удалён!")
+    return redirect("view_dashboard")
+
+def update_news_mont(request, news_id):
+
+    news = News.objects.get(id=news_id)
+    news.mont = request.user
+    news.save()
+
+    messages.success(request, f"Монтажёр {request.user} работает над новостью — {news.title}")
+    return redirect("view_dashboard")
+
+def release_news(request, news_id):
+
+    news = News.objects.get(id=news_id)
+    status = Status.objects.get(title="Эфир")
+    news.status = status
+    news.save()
+
+    messages.success(request, f"Новость — {news.title} допущена в эфир")
     return redirect("view_dashboard")

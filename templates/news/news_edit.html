@@ -33,7 +33,8 @@
             document.querySelector('.status-changer').addEventListener('change', function(e) {
                 const commentField = document.getElementById('id_comment');
                 
-                if (e.target.value == "4") {
+                console.log(e.target.value)
+                if (e.target.value == "2") {
                     commentField.removeAttribute('disabled');
                 } else {
                     commentField.setAttribute('disabled',"");

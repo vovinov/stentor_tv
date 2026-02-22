@@ -1,6 +1,7 @@
 from django.shortcuts import redirect, render
 from django.db.models import Q
 from django.contrib.auth.decorators import login_required
+from django.utils import timezone
 
 from apps.assets.forms import AssetCreationForm
 from apps.news.models import News
@@ -59,7 +60,9 @@ def view_for_mont(request):
 @login_required
 def view_for_release(request):
     clean_all_news_locks()
-    news = News.objects.all().order_by("-updated_at")
+
+    status = Status.objects.get(title="Выпуск")
+    news = News.objects.filter(status=status).order_by("-updated_at")
 
     context = {"news": news}
 

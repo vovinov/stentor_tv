@@ -12,7 +12,12 @@ class AssetCreationForm(forms.ModelForm):
         label="Хронометраж",
         widget=forms.TimeInput(attrs={"class": "w-full"}),
     )
+    video = forms.FileField(
+        label="Файл",
+        widget=forms.FileInput(attrs={"class": "file-input w-full"}),
+    )
+
 
     class Meta:
         model = Asset
-        fields = ("title", "duration")
+        fields = ("title", "duration", "video")

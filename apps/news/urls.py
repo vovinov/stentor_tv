@@ -7,6 +7,7 @@ from .views import (
     delete_comment_from_news,
     heartbeat_lock,
     manage_news,
+    release_news,
     search_news,
     create_news,
     show_news_to_add_rundown,
@@ -14,6 +15,7 @@ from .views import (
     NewsUpdateView,
     delete_news_from_rundown,
     show_assets_to_add_news,
+    update_news_mont,
     view_news_history,
 )
 
@@ -27,6 +29,8 @@ urlpatterns = [
     path(
         "<int:news_id>/assets/", show_assets_to_add_news, name="show_assets_to_add_news"
     ),
+    path("<int:news_id>/update/asset/", update_news_mont, name="update_news_mont"),
+    path("<int:news_id>/release/", release_news, name="release_news"),
     path(
         "<int:news_id>/assets/<int:asset_id>",
         change_asset_news,
